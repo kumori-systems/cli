@@ -1,5 +1,5 @@
 {
-  "name": "new-kumori-client",
+  "name": "@kumori/client",
   "version": "1.0.0",
   "description": "Command line client for Kumori Platform",
   "main": "src/index",
