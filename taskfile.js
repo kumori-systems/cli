@@ -1,5 +1,6 @@
 const vm = require ('vm');
 const fs = require ('fs');
+const path = require('path');
 
 var pkg = require('./package.json');
 
@@ -7,6 +8,15 @@ var pkg = require('./package.json');
 function getJSON(filepath) {
   const jsonString = "g = " + fs.readFileSync(filepath, 'utf8') + "; g";
   return (new vm.Script(jsonString)).runInNewContext();
+}
+
+function *removeDevDependencies(file) {
+  let packjson = JSON.parse(file.data.toString('utf8'))
+  if (packjson.devDependencies) {
+    delete packjson.devDependencies
+  }
+  file.base = path.parse(file.base).name + ".json";
+  file.data = new Buffer(JSON.stringify(packjson, null, 2));
 }
 
 exports.default = function * (task) {
@@ -35,7 +45,7 @@ exports.build = function * (task) {
     .typescript(tsopts)
     .target('build/src')
     .source('bin/**/*')
-    .target('build/src')
+    .target('./build/src', { mode: 0o775 })
 }
 
 exports.buildtest = function * (task) {
@@ -51,9 +61,8 @@ exports.buildtest = function * (task) {
 exports.dist = function * (task) {
   yield task.serial(['build'])
     .source('./package.json')
+    .run({every: true}, removeDevDependencies)
     .target('./build')
-    .source('bin/**/*')
-    .target('./build/src')
 }
 
 exports.test = function * (task) {
