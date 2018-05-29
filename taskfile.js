@@ -63,6 +63,8 @@ exports.dist = function * (task) {
     .source('./package.json')
     .run({every: true}, removeDevDependencies)
     .target('./build')
+    .source('./README.md')
+    .target('./build')
 }
 
 exports.test = function * (task) {

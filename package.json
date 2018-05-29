@@ -14,8 +14,8 @@
     "clean": "taskr clean",
     "superclean": "taskr superclean"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "Kumori Systems <info@kumori.systems>",
+  "license": "MIT",
   "devDependencies": {
     "@taskr/shell": "^1.1.0",
     "@taskr/typescript": "^1.1.0",
