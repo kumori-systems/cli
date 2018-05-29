@@ -9,6 +9,7 @@ import { workspace } from './workspace';
 const pkg = require("../package.json")
 
 module.exports = function (argv: string[]): void {
+
     program
         .version(pkg.version)
         .command('component', 'Manages components')

@@ -3,19 +3,25 @@ import * as logger from './logger'
 import { workspace } from './workspace/index'
 import { run } from './utils'
 
+let defaultDomain = workspace.components.configManager.config.domain
+let defaultTemplate = workspace.components.configManager.config.runtime.template
+let defaultParent = workspace.components.configManager.config.runtime.parent
+let defaultFolder = workspace.components.configManager.config.runtime.folder
+let defaultEntrypoint = workspace.components.configManager.config.runtime.entrypoint
+let defaultStamp = workspace.components.configManager.config.defaultStamp.name
+
 program
-    .command('add')
+    .command('add <name>')
     .description('Adds a new runtime to the workspace')
-    .option('-d, --company-domain <company-domain>', 'The runtime domain')
-    .option('-n, --name <name>', 'The runtime name')
-    .option('-p, --parent <parent>', 'The URN of parent of this runtime')
-    .option('-c, --component-folder <component>', 'The folder where the component code will be deployed')
-    .option('-e, --entrypoing', 'The new runtime entrypoint')
-    .option('-t, --template <template>', 'The runtime template')
-    .action(({domain, name, parent, componentFolder, entrypoint, template}) => {
+    .option('-d, --company-domain <company-domain>', 'The runtime domain', defaultDomain)
+    .option('-p, --parent-runtime <parent-runtime>', 'The URN of parent of this runtime', defaultParent)
+    .option('-c, --component-folder <component>', 'The folder where the component code will be deployed', defaultFolder)
+    .option('-e, --entrypoint <entrypoint>', 'The new runtime entrypoint', defaultEntrypoint)
+    .option('-t, --template <template>', 'The runtime template', defaultTemplate)
+    .action((name, {companyDomain, parentRuntime, componentFolder, entrypoint, template}) => {
         run(async () => {
-            logger.info(`Adding runtime ${name} in ${domain} using template ${template}`)
-            let info = await workspace.runtimes.add(name, domain, parent, componentFolder, entrypoint, template)
+            logger.info(`Adding runtime ${name} in ${companyDomain} using template ${template}`)
+            let info = await workspace.runtimes.add(name, companyDomain, parentRuntime, componentFolder, entrypoint, template)
             logger.info(`Runtime ${info.urn} created in ${info.path}`)
         })
     })
@@ -23,7 +29,7 @@ program
 program
     .command('build <name>')
     .description('Creates a distributable version of the runtime')
-    .option('-d, --company-domain <company-domain>', 'The runtime domain')
+    .option('-d, --company-domain <company-domain>', 'The runtime domain', defaultDomain)
     .action((name, {companyDomain}) => {
         run(async () => {
             logger.info(`Bundeling runtime ${name} from ${companyDomain}`)
@@ -35,8 +41,8 @@ program
 program
     .command('register <name>')
     .description('Registers a runtime in a stamp')
-    .option('-d, --company-domain <company-domain>', 'The runtime domain')
-    .option('-s, --stamp <stamp>', 'The target stamp')
+    .option('-d, --company-domain <company-domain>', 'The runtime domain', defaultDomain)
+    .option('-s, --stamp <stamp>', 'The target stamp', defaultStamp)
     .action((name, {companyDomain, stamp}) => {
         run(async () => {
             logger.info(`Registering in stamp ${stamp} runtime ${name} from ${companyDomain}`)
@@ -48,7 +54,7 @@ program
 program
     .command('remove <name>')
     .description('Removes an existing runtime from the workspace')
-    .option('-d, --company-domain <company-domain>', 'The runtime domain')
+    .option('-d, --company-domain <company-domain>', 'The runtime domain', defaultDomain)
     .action((name, {companyDomain}) => {
         run(async () => {
             logger.info(`Removing runtime ${name} from ${companyDomain}`)
@@ -60,10 +66,9 @@ program
 program
     .command('unregister <name>')
     .description('Unregisters a runtime from a stamp')
-    .option('-d, --company-domain <company-domain>', 'The runtime domain')
-    .option('-n, --name <name>', 'The runtime name')
+    .option('-d, --company-domain <company-domain>', 'The runtime domain', defaultDomain)
     .option('-v, --version <version>', 'The runtime version')
-    .option('-s, --stamp <stamp>', 'The target stamp')
+    .option('-s, --stamp <stamp>', 'The target stamp', defaultStamp)
     .action((name, {companyDomain, version, stamp}) => {
         run(async () => {
             logger.info(`Unregistering from stamp ${stamp} version ${version} of runtime ${name} from ${companyDomain}`)

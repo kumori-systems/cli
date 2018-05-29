@@ -1,7 +1,9 @@
-import { WorkspaceConfigManager } from './workspace-manager'
-import { Domain, Path } from './types'
-import { getJSON } from './utils'
+import { WorkspaceConfigManager, StampConfig } from './workspace-manager'
+import { Domain, Path, Version } from './types'
+import { getJSON, checkParameter, checkIsNumber } from './utils'
 import * as path from 'path'
+import * as fs from 'fs'
+import { AdmissionClient } from 'admission-client'
 
 export class ElementManager {
 
@@ -11,6 +13,45 @@ export class ElementManager {
     constructor(configManager: WorkspaceConfigManager, subfolder: Path) {
         this.configManager = configManager;
         this.subfolder = subfolder
+    }
+
+    public getCurrentVersion(name: string, domain?: Domain): Version {
+        try {
+            let manifest = this._getElementManifest(name, domain)
+            let parts:string[] = manifest.name.split('/')
+            let version = parts[parts.length-1]
+            parts = version.split('_')
+            for (let part of parts) {
+                let converted:number = parseInt(part)
+                if (converted == NaN) {
+                    return undefined
+                }
+            }
+            return version
+        } catch(error) {
+            return undefined
+        }
+    }
+
+    protected _checkElement(name: string, domain?: Domain): Promise<boolean> {
+        return new Promise((resolve, reject) => {
+            try {
+                let path = this._getElementFolder(name, domain)
+                fs.stat(path, (error, stats) => {
+                    if (error && error.code.localeCompare('ENOENT') == 0) {
+                        resolve(false)
+                    } else if (error) {
+                        reject(error)
+                    } else if (stats.isDirectory()) {
+                        resolve(true)
+                    } else {
+                        resolve(false)
+                    }
+                })
+            } catch(error) {
+                reject(error)
+            }
+        })
     }
 
     protected _getElementFolder(name: string, domain?: Domain): Path {
@@ -27,7 +68,51 @@ export class ElementManager {
     }
 
     protected _getElementManifest(name: string, domain?: Domain): any {
-        let manifestPath = path.join(this._getElementFolder(name, domain), 'Manifest.json')
-        return getJSON(manifestPath)
+        try {
+            let manifestPath = path.join(this._getElementFolder(name, domain), 'Manifest.json')
+            return getJSON(manifestPath)
+        } catch(error) {
+            if (error.code.localeCompare('ENOENT') == 0) {
+                throw new Error(`Manifest not found for ${name}.`)
+            } else {
+                throw new Error(`Error accesing ${name}'s manifest`)
+            }
+        }
+    }
+
+
+    protected async _getAdmissionClient(stamp: string): Promise<AdmissionClient> {
+        let stampData = await this.configManager.getStampConfig(stamp)
+        if (!stampData) {
+            throw new Error("Stamp not found.")
+        }
+        return new AdmissionClient(`${stampData.admission}/admission`, stampData.token)
+    }
+
+    protected async _checkStamp(stamp: string): Promise<void> {
+        let admission:AdmissionClient
+        try {
+            admission = await this._getAdmissionClient(stamp)
+            await admission.init()
+            await admission.close()
+        } catch(error) {
+            if (error.code && (error.code.localeCompare('ECONNREFUSED') == 0)) {
+                error.message = `Connection to ${stamp} refused`
+            } else {
+                error.message = `Unable to connect to ${stamp}`
+            }
+            try {
+                admission.close()
+            } catch(err) {}
+            throw error
+        }
+    }
+
+    protected _checkParameter(param: any, errorMessage: string): void {
+        return checkParameter(param, errorMessage)
+    }
+
+    protected _checkIsNumber(param: any, errorMessage: string, min: number, max: number): void {
+        return checkIsNumber(param, errorMessage, min, max)
     }
 }

@@ -3,13 +3,16 @@ import * as logger from './logger'
 import { workspace } from './workspace';
 import { run } from './utils'
 
+let defaultDomain = workspace.components.configManager.config.domain
+let defaultTemplate = workspace.components.configManager.config.service.template
+let defaultStamp = workspace.components.configManager.config.defaultStamp.name
+
 program
-    .command('add')
+    .command('add <name>')
     .description('Adds a new service to the workspace')
-    .option('-d, --company-domain <company-domain>', 'The service domain')
-    .option('-n, --name <name>', 'The service name')
-    .option('-t, --template <template>', 'The service template')
-    .action(({companyDomain, name, template}) => {
+    .option('-d, --company-domain <company-domain>', 'The service domain', defaultDomain)
+    .option('-t, --template <template>', 'The service template', defaultTemplate)
+    .action((name, {companyDomain, template}) => {
         run(async () => {
             logger.info(`Adding service ${name} in ${companyDomain} using template ${template}`)
             let info = await workspace.services.add(name, companyDomain, template)
@@ -20,8 +23,8 @@ program
 program
     .command('register <name>')
     .description('Registers a service in a stamp')
-    .option('-d, --company-domain <company-domain>', 'The service domain')
-    .option('-s, --stamp <stamp>', 'The target stamp')
+    .option('-d, --company-domain <company-domain>', 'The service domain', defaultDomain)
+    .option('-s, --stamp <stamp>', 'The target stamp', defaultStamp)
     .action((name, {companyDomain, stamp}) => {
         run(async () => {
             logger.info(`Registering in stamp ${stamp} service ${name} from ${companyDomain}`)
@@ -33,7 +36,7 @@ program
 program
     .command('remove <name>')
     .description('Removes an existing service from the workspace')
-    .option('-d, --company-domain <company-domain>', 'The service domain')
+    .option('-d, --company-domain <company-domain>', 'The service domain', defaultDomain)
     .action((name, {companyDomain}) => {
         run(async () => {
             logger.info(`Removing service ${name} from ${companyDomain}`)
@@ -45,14 +48,14 @@ program
 program
     .command('unregister <name>')
     .description('Unregisters a service from a stamp')
-    .option('-d, --company-domain <company-domain>', 'The service domain')
-    .option('-v, --version <version>', 'The service version')
-    .option('-s, --stamp <stamp>', 'The target stamp')
-    .action((name, {companyDomain, version, stamp}) => {
+    .option('-d, --company-domain <company-domain>', 'The service domain', defaultDomain)
+    .option('-v, --service-version <service-version>', 'The component version (default: current version of the service in the workspace)')
+    .option('-s, --stamp <stamp>', 'The target stamp', defaultStamp)
+    .action((name, {companyDomain, serviceVersion, stamp}) => {
         run(async () => {
-            logger.info(`Unregistering from stamp ${stamp} version ${version} of service ${name} from ${companyDomain}`)
-            await workspace.services.unregister(name, companyDomain, version, stamp)
-            logger.info(`Version ${version} unregistered`)
+            logger.info(`Unregistering from stamp ${stamp} version ${serviceVersion} of service ${name} from ${companyDomain}`)
+            await workspace.services.unregister(name, companyDomain, serviceVersion, stamp)
+            logger.info(`Version ${serviceVersion} unregistered`)
         })
     })
 

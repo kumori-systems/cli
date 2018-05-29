@@ -1,10 +1,39 @@
 import { Domain, Path, Template, Url } from './types'
-import { getJSON } from './utils'
+import { getJSON, checkParameter } from './utils'
 import * as fs from 'fs'
+
+const DEFAULT_CONFIG: any = {
+    "working-stamp": "localstamp",
+    "domain": "domain.com",
+    "component": {
+        "template": "javascript"
+    },
+    "deployment": {
+        "template": "basic"
+    },
+    "resource": {
+        "template": "vhost"
+    },
+    "runtime": {
+        "template": "basic",
+        "parent": "eslap://eslap.cloud/runtime/native/1_1_1",
+        "folder": "/eslap/component",
+        "entrypoint": "/eslap/runtime-agent/scripts/start-runtime-agent.sh"
+    },
+    "service": {
+        "template": "basic"
+    },
+    "stamps": {
+        "localstamp": {
+            "admission": "http://localhost:8090"
+        }
+    }
+};
 
 export interface StampConfig {
     admission: Url
-    token: string
+    token?: string
+    name: string
 }
 
 export interface WorkspaceConfig {
@@ -16,11 +45,15 @@ export interface WorkspaceConfig {
     }
     domain: Domain
     runtime: {
+        template: Template
         parent: string
         folder: Path
         entrypoint: Path
     }
     service: {
+        template: Template
+    }
+    resource: {
         template: Template
     }
     stamps: {
@@ -33,6 +66,7 @@ export class WorkspaceConfigManager {
 
     configFilePath: Path
     config: WorkspaceConfig
+    initialized: boolean
 
     constructor(configFilePath: string) {
         this.loadConfig(configFilePath)
@@ -43,22 +77,47 @@ export class WorkspaceConfigManager {
     }
 
     public isValidWorkspace() {
-        return (this.config != null) && (this.config != undefined)
+        return this.initialized
+        // return (this.config != null) && (this.config != undefined)
     }
 
     public loadConfig(configFilePath: string): void {
         try {
             this.configFilePath = configFilePath
-            this.config = getJSON(this.configFilePath) as WorkspaceConfig
+            let rawConfig = getJSON(this.configFilePath)
+            this.config = this._convertRawConfig(rawConfig)
+            this.initialized = true
         } catch(error) {
+            this.initialized = false
             if (error.code.localeCompare("ENOENT") != 0) {
                 throw error
+            } else {
+                this.config = DEFAULT_CONFIG
             }
         }
     }
 
     public saveChanges(): Promise<void> {
-        return this._saveChangesRaw(JSON.stringify(this.config, null, 4))
+        try {
+            if (this.config) {
+                let data = JSON.stringify(this.config)
+                let configCopy = JSON.parse(data)
+                if (this.config.defaultStamp) {
+                    let workingStamp = this.config.defaultStamp.name
+                    configCopy['working-stamp'] = workingStamp
+                    delete configCopy.defaultStamp
+                }
+                for (let stamp in configCopy.stamps) {
+                    if (configCopy.stamps[stamp].name) {
+                        delete configCopy.stamps[stamp].name
+                    }
+                }
+                return this._saveChangesRaw(JSON.stringify(configCopy, null, 4))
+            }
+
+        } catch(error) {
+            console.log("ERROR", error)
+        }
     }
 
     public async getWorkspaceConfig(path:string): Promise<WorkspaceConfig> {
@@ -66,6 +125,7 @@ export class WorkspaceConfigManager {
     }
 
     public async getStampConfig(stamp: string): Promise<StampConfig> {
+        checkParameter(stamp, "Stamp not defined")
         return stamp ? this.config.stamps[stamp] : await this.getDefaultStampConfig()
     }
 
@@ -74,20 +134,14 @@ export class WorkspaceConfigManager {
     }
 
     public async setDefaultDomain(domain: Domain): Promise<void> {
-        if (!domain) {
-            throw new Error("Domain is missing")
-        }
+        checkParameter(domain, "Domain not defined")
         this.config.domain = domain;
         await this.saveChanges()
     }
 
     public async addStamp (name: string, config: StampConfig, isDefault: boolean = false): Promise<void> {
-        if (!name) {
-            throw new Error(`Stamp name missing`)
-        }
-        if (!config) {
-            throw new Error(`Stamp config missing`)
-        }
+        checkParameter(name, "Name not defined")
+        checkParameter(config, "Stamp config not defined")
         if (this.config.stamps[name]) {
             throw new Error(`Stamp ${name} already registered`)
         }
@@ -99,34 +153,30 @@ export class WorkspaceConfigManager {
     }
 
     public async updateStamp (name: string, config: StampConfig): Promise<void> {
-        if (!name) {
-            throw new Error(`Stamp name missing`)
-        }
-        if (!config) {
-            throw new Error(`Stamp config missing`)
-        }
+        checkParameter(name, "Name not defined")
+        checkParameter(config, "Stamp config not defined")
         if (!this.config.stamps[name]) {
             throw new Error(`Stamp ${name} is not registered`)
         }
-        this.config.stamps[name] = config;
+        this.config.stamps[name].admission = config.admission || this.config.stamps[name].admission
+        this.config.stamps[name].token = config.token || this.config.stamps[name].token
         await this.saveChanges()
     }
 
     public async removeStamp (name: string): Promise<void> {
-        if (!name) {
-            throw new Error(`Stamp name missing`)
-        }
+        checkParameter(name, "Name not defined")
         if (!this.config.stamps[name]) {
             throw new Error(`Stamp ${name} is not registered`)
+        }
+        if (this.config.defaultStamp && (name.localeCompare(this.config.defaultStamp.name) == 0)) {
+            throw new Error(`Stamp ${name} is the default stamp and cannot be removed`)
         }
         delete this.config.stamps[name]
         await this.saveChanges()
     }
 
     public async setDefaultStamp (name: string): Promise<void> {
-        if (!name) {
-            throw new Error(`Stamp name missing`)
-        }
+        checkParameter(name, "Name not defined")
         if (!this.config.stamps[name]) {
             throw new Error(`Stamp ${name} is not registered`)
         }
@@ -139,10 +189,8 @@ export class WorkspaceConfigManager {
     }
 
     private _saveChangesRaw(data: string): Promise<void> {
-        fs.writeFileSync(this.configFilePath, data);
         return new Promise((resolve, reject) => {
             try {
-                let data = JSON.stringify(this.config, null, 4)
                 fs.writeFile(this.configFilePath, data, (error) => {
                     if (error) {
                         reject(error)
@@ -157,4 +205,20 @@ export class WorkspaceConfigManager {
         })
     }
 
+    private _convertRawConfig(raw: any): WorkspaceConfig {
+        let config:WorkspaceConfig = {
+            domain: raw.domain,
+            component: raw.component,
+            deployment: raw.deployment,
+            resource: raw.resource,
+            runtime: raw.runtime,
+            service: raw.service,
+            stamps: raw.stamps,
+            defaultStamp: raw.stamps[raw['working-stamp']]
+        }
+        for (let name in config.stamps) {
+            config.stamps[name].name = name
+        }
+        return config
+    }
 }

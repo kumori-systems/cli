@@ -2,7 +2,7 @@ import { ElementInfo } from './element-info'
 import { Domain, Version, Template, Urn } from './types'
 import { ElementManager } from './element-manager'
 import { workspace, Deployment, DeploymentConfig, ServiceConfig, RegistrationResult } from 'workspace'
-import { getAdmissionClient } from './utils'
+import { ScalingDeploymentModification } from 'admission-client'
 
 export interface DeploymentInfo extends ElementInfo {
 }
@@ -31,9 +31,14 @@ export interface RegistrationData {
 export class DeploymentManager extends ElementManager {
 
     public async add (name: string, domain: Domain, service: string, version: Version, template: Template): Promise<DeploymentInfo> {
+        this._checkParameter(name, "Name not defined")
+        this._checkParameter(domain, "Service domain not defined")
+        this._checkParameter(service, "Service name not defined")
+        this._checkParameter(version, "Service version not defined")
+        this._checkParameter(template, "Template not defined")
         let config:DeploymentConfig = {
             name: name,
-            config: {
+            service: {
                 domain: domain,
                 name: service,
                 version: version
@@ -46,7 +51,16 @@ export class DeploymentManager extends ElementManager {
         return info
     }
 
+    public async update (name: string, template: Template): Promise<DeploymentInfo> {
+        this._checkParameter(name, "Name not defined")
+        this._checkParameter(template, "Template not defined")
+        throw new Error('NOT IMPLEMENTED')
+    }
+
     public async deploy (name: string, stamp: string): Promise<RegistrationData> {
+        this._checkParameter(name, "Name not defined")
+        this._checkParameter(stamp, "Target stamp not defined")
+        await this._checkStamp(stamp)
         let info:RegistrationResult = await workspace.deployWithDependencies(name, stamp)
         if (!info.deployments) {
             throw new Error('Nothing deployed')
@@ -102,7 +116,9 @@ export class DeploymentManager extends ElementManager {
      * @returns The list of running stamps
      */
     public async ps (stamp: string): Promise<DeploymentData[]> {
-        let admission = getAdmissionClient(stamp)
+        this._checkParameter(stamp, "Target stamp not defined")
+        await this._checkStamp(stamp)
+        let admission = await this._getAdmissionClient(stamp)
         let data:DeploymentData[] = []
         let deployments = await admission.findDeployments()
         if (deployments) {
@@ -115,26 +131,49 @@ export class DeploymentManager extends ElementManager {
     }
 
     public remove (name: string): Promise<void> {
+        this._checkParameter(name, "Name not defined")
         return Promise.reject("NOT IMPLEMENTED");
     }
 
-    public async scale (name: string, role:string, instances: number, stamp: string): Promise<number> {
-        let value:string = await workspace.deploment.scaleRole(name, role, instances, stamp)
+    public async scale (urn: string, role:string, instances: number, stamp: string): Promise<number> {
+        this._checkParameter(urn, "Deployment URN not defined")
+        this._checkParameter(role, "Role to scale not defined")
+        this._checkParameter(instances, "New number of role instances not defined")
+        this._checkIsNumber(instances, "The number of instances must be a natural number greater than zero", 1, Number.MAX_SAFE_INTEGER)
+        this._checkParameter(stamp, "Target stamp not defined")
+        await this._checkStamp(stamp)
+        if (!(await this._checkDeployment(urn, stamp))) {
+            return Promise.reject(`Deployment not found in ${stamp} with URN "${urn}"`)
+        }
+        let modification = new ScalingDeploymentModification();
+        modification.deploymentURN = urn;
+        modification.scaling = {};
+        modification.scaling[role] = instances;
+        let admission = await this._getAdmissionClient(stamp)
+        let value = await admission.modifyDeployment(modification)
         if (!value) {
-            throw new Error(`Error scaling role ${role} in servce ${name}`)
+            let deployments:{[key: string]: Deployment} = await admission.findDeployments(urn)
+            return Object.keys(deployments[urn].roles[role].instances).length
+        } else {
+            let newInstances:number = parseInt(value, 10)
+            if (isNaN(newInstances)) {
+                throw new Error(`Error scaling role ${role} in servce ${urn}`)
+            }
+            return newInstances
         }
-        let newInstances:number = parseInt(value, 10)
-        if (isNaN(newInstances)) {
-            throw new Error(`Error scaling role ${role} in servce ${name}`)
-        }
-        return newInstances
     }
 
-    public async undeploy (name: string, stamp: string): Promise<DeploymentData> {
-        let admission = getAdmissionClient(stamp)
-        let result = admission.undeploy(name)
+    public async undeploy (urn: string, stamp: string): Promise<DeploymentData> {
+        this._checkParameter(urn, "Deployment URN not defined")
+        this._checkParameter(stamp, "Target stamp not defined")
+        await this._checkStamp(stamp)
+        if (!(await this._checkDeployment(urn, stamp))) {
+            return Promise.reject(`Deployment not found in ${stamp} with URN "${urn}"`)
+        }
+        let admission = await this._getAdmissionClient(stamp)
+        let result = await admission.undeploy(urn)
         let data = {
-            urn: name
+            urn: urn
         }
         return data
     }
@@ -145,6 +184,26 @@ export class DeploymentManager extends ElementManager {
         }
         let manifest = this._getElementManifest(name)
         return manifest.servicename as Urn
+    }
+
+    private async _checkDeployment(name: string, stamp: string): Promise<boolean> {
+        try {
+            let admission = await this._getAdmissionClient(stamp)
+            let deployments:{[key: string]: Deployment} = await admission.findDeployments(name)
+            if ((!deployments) || (!deployments[name])) {
+                return false
+            } else {
+                return true
+            }
+        } catch(error) {
+            if (error.message && (error.message.indexOf(`Deployment ${name} does not exist`) != -1)) {
+                return false
+            } else if (error.message && (error.message.indexOf("Unexpected token u in JSON at position 0") != -1)) {
+                return false
+            } else {
+                throw new Error(`Failed checking deployment ${name} in stamp ${stamp}`)
+            }
+        }
     }
 
     /**

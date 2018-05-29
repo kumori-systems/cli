@@ -3,13 +3,17 @@ import * as logger from './logger'
 import { workspace } from './workspace/index'
 import { run } from './utils'
 
+let defaultDomain = workspace.components.configManager.config.domain
+let defaultTemplate = workspace.components.configManager.config.component.template
+let defaultStamp = workspace.components.configManager.config.defaultStamp.name
+
 program
-    .command('add')
+    .command('add <name>')
     .description('Adds a new component to the workspace')
-    .option('-d, --company-domain <company-domain>', 'The component domain')
+    .option('-d, --company-domain <company-domain>', 'The component domain', defaultDomain)
     .option('-n, --name <name>', 'The component name')
-    .option('-t, --template <template>', 'The component template')
-    .action(({companyDomain, name, template}) => {
+    .option('-t, --template <template>', 'The component template', defaultTemplate)
+    .action((name, {companyDomain, template}) => {
         run(async () => {
             logger.info(`Adding component ${name} in ${companyDomain} using template ${template}`)
             let info = await workspace.components.add(name, companyDomain, template)
@@ -20,7 +24,7 @@ program
 program
     .command('build <name>')
     .description('Creates a distributable version of the component')
-    .option('-d, --company-domain <company-domain>', 'The component domain')
+    .option('-d, --company-domain <company-domain>', 'The component domain', defaultDomain)
     .action((name, {companyDomain}) => {
         run(async () => {
             logger.info(`Bundeling component ${name} from ${companyDomain}`)
@@ -32,8 +36,8 @@ program
 program
     .command('register <name>')
     .description('Registers a component in a stamp')
-    .option('-d, --company-domain <company-domain>', 'The component domain')
-    .option('-s, --stamp <stamp>', 'The target stamp')
+    .option('-d, --company-domain <company-domain>', 'The component domain', defaultDomain)
+    .option('-s, --stamp <stamp>', 'The target stamp', defaultStamp)
     .action((name, {companyDomain, stamp}) => {
         run(async () => {
             logger.info(`Registering in stamp ${stamp} component ${name} from ${companyDomain}`)
@@ -45,7 +49,7 @@ program
 program
     .command('remove <name>')
     .description('Removes an existing component from the workspace')
-    .option('-d, --company-domain <company-domain>', 'The component domain')
+    .option('-d, --company-domain <company-domain>', 'The component domain', defaultDomain)
     .action((name, {companyDomain}) => {
         run(async () => {
             logger.info(`Removing component ${name} from ${companyDomain}`)
@@ -57,14 +61,14 @@ program
 program
     .command('unregister <name>')
     .description('Unregisters a component from a stamp')
-    .option('-d, --company-domain <company-domain>', 'The component domain')
-    .option('-v, --version <version>', 'The component version')
-    .option('-s, --stamp <stamp>', 'The target stamp')
-    .action((name, {companyDomain, version, stamp}) => {
+    .option('-d, --company-domain <company-domain>', 'The component domain', defaultDomain)
+    .option('-v, --component-version <component-version>', 'The component version (default: current version of the component in the workspace)')
+    .option('-s, --stamp <stamp>', 'The target stamp', defaultStamp)
+    .action((name, {companyDomain, componentVersion, stamp}) => {
         run(async () => {
-            logger.info(`Unregistering from stamp ${stamp} version ${version} of component ${name} from ${companyDomain}`)
-            await workspace.components.unregister(name, companyDomain, version, stamp)
-            logger.info(`Version ${version} unregistered`)
+            logger.info(`Unregistering from stamp ${stamp} version ${componentVersion} of component ${name} from ${companyDomain}`)
+            await workspace.components.unregister(name, companyDomain, componentVersion, stamp)
+            logger.info(`Version ${componentVersion} unregistered`)
         })
     })
 
