@@ -1,7 +1,7 @@
 import { ElementInfo } from './element-info'
 import { Domain, Version, Template, Urn } from './types'
 import { ElementManager } from './element-manager'
-import { workspace, Deployment, DeploymentConfig, ServiceConfig, RegistrationResult } from 'workspace'
+import { workspace, Deployment, DeploymentConfig, ServiceConfig, RegistrationResult } from '@kumori/workspace'
 import { ScalingDeploymentModification } from 'admission-client'
 
 export interface DeploymentInfo extends ElementInfo {

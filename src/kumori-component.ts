@@ -11,7 +11,6 @@ program
     .command('add <name>')
     .description('Adds a new component to the workspace')
     .option('-d, --company-domain <company-domain>', 'The component domain', defaultDomain)
-    .option('-n, --name <name>', 'The component name')
     .option('-t, --template <template>', 'The component template', defaultTemplate)
     .action((name, {companyDomain, template}) => {
         run(async () => {

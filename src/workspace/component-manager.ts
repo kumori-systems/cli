@@ -1,6 +1,6 @@
 import { ElementInfo } from './element-info'
 import { Domain, Version, Template, Path } from './types'
-import { workspace, ComponentConfig } from 'workspace'
+import { workspace, ComponentConfig } from '@kumori/workspace'
 import { ElementManager } from './element-manager'
 
 export interface ComponentInfo extends ElementInfo {
