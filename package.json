@@ -1,0 +1,24 @@
+{
+  "name": "@kumori/client",
+  "version": "1.0.0",
+  "description": "Command line client for Kumori Platform",
+  "main": "src/index",
+  "bin": {
+    "kumori": "src/kumori"
+  },
+  "scripts": {
+    "dist": "taskr dist",
+    "build": "taskr build",
+    "lint": "taskr lint",
+    "test": "taskr test ",
+    "clean": "taskr clean",
+    "superclean": "taskr superclean"
+  },
+  "author": "Kumori Systems <info@kumori.systems>",
+  "license": "MIT",
+  "dependencies": {
+    "admission-client": "git+ssh://git@gitlab.com:ECloud/admission-client#master",
+    "commander": "^2.15.1",
+    "workspace": "git+ssh://git@gitlab.com/jbgisber/libs-workspace.git#master"
+  }
+}
