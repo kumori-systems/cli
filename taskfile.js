@@ -10,10 +10,13 @@ function getJSON(filepath) {
   return (new vm.Script(jsonString)).runInNewContext();
 }
 
-function *removeDevDependencies(file) {
+function *createProductionPackage(file) {
   let packjson = JSON.parse(file.data.toString('utf8'))
   if (packjson.devDependencies) {
     delete packjson.devDependencies
+  }
+  if (packjson.scripts) {
+    delete packjson.scripts
   }
   file.base = path.parse(file.base).name + ".json";
   file.data = new Buffer(JSON.stringify(packjson, null, 2));
@@ -61,7 +64,7 @@ exports.buildtest = function * (task) {
 exports.dist = function * (task) {
   yield task.serial(['build'])
     .source('./package.json')
-    .run({every: true}, removeDevDependencies)
+    .run({every: true}, createProductionPackage)
     .target('./build')
     .source('./README.md')
     .target('./build')
