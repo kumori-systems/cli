@@ -38,7 +38,7 @@ The services deployed in Kumori Platform must follow a very specific service mod
 * Service or deployment: it is an instance of a service application and it is composed by several instance of each of its components. The number of instances might variate in time.
 * Stamp: is an instance of the Kumori Platform. Only one stamp is considered THE Kumori Platform. However, in some cases specific stamps can be created by the Kumori team for specific purposes.
 
-## Commands
+## Usage
 
 This application currently supports the following commands:
 
@@ -248,3 +248,7 @@ For each stamp the following information must be provided:
 * The stamp authentication token. This token can be picked up from the platform dashboard. Recall that tokens expire.
 
 So, taken that into account, with the `add` subcommand a new platform can be registered. The `update` subcommand can be used to change the configuration of a previously registered stamp. The `remove` subcommand deletes a previously registered Kumori Platform instance. Finally, the `use` subcommand sets the Kumori Platform used by default.
+
+## License
+
+MIT © Kumori Systems
