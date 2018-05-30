@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const element_manager_1 = require("./element-manager");
-const workspace_1 = require("workspace");
+const workspace_1 = require("@kumori/workspace");
 class RuntimeManager extends element_manager_1.ElementManager {
     add(name, domain, parent, componentFolder, entrypoint, template) {
         return __awaiter(this, void 0, void 0, function* () {

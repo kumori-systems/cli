@@ -11,6 +11,6 @@
   "dependencies": {
     "admission-client": "git+ssh://git@gitlab.com:ECloud/admission-client#master",
     "commander": "^2.15.1",
-    "workspace": "git+ssh://git@gitlab.com/jbgisber/libs-workspace.git#master"
+    "@kumori/workspace": "https://github.com/kumori-systems/workspace.git#master"
   }
 }

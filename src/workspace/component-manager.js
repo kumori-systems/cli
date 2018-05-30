@@ -8,7 +8,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const workspace_1 = require("workspace");
+const workspace_1 = require("@kumori/workspace");
 const element_manager_1 = require("./element-manager");
 class ComponentManager extends element_manager_1.ElementManager {
     add(name, domain, template) {
