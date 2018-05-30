@@ -66,7 +66,11 @@ exports.dist = function * (task) {
     .source('./package.json')
     .run({every: true}, createProductionPackage)
     .target('./build')
-    .source(['./README.md', './.gitignore', 'license'])
+    .source('./README.md')
+    .target('./build')
+    .source('./.gitignore')
+    .target('./build')
+    .source('./license')
     .target('./build')
 }
 
