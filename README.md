@@ -13,7 +13,7 @@ This application can be used to boost the process of developing services for Kum
 
 * [Installation](#installation)
 * [The Kumori Platform Service Model](#the-kumori-platform-service-model)
-* [Commands](#commands)
+* [Usage](#usage)
   * [`init`](#init)
   * [`component`](#component)
   * [`deployment`](#deployment)
