@@ -40,4 +40,3 @@ module.exports = function (argv) {
     program
         .parse(process.argv);
 };
-//# sourceMappingURL=kumori-main.js.map

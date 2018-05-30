@@ -63,4 +63,3 @@ class Workspace {
 }
 exports.Workspace = Workspace;
 exports.workspace = new Workspace();
-//# sourceMappingURL=index.js.map

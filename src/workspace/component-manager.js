@@ -76,4 +76,3 @@ class ComponentManager extends element_manager_1.ElementManager {
     }
 }
 exports.ComponentManager = ComponentManager;
-//# sourceMappingURL=component-manager.js.map

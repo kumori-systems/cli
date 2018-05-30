@@ -63,4 +63,3 @@ program
     }));
 });
 program.parse(process.argv);
-//# sourceMappingURL=kumori-resource.js.map

@@ -66,7 +66,7 @@ The `kumoriConfig.json` file contains the configuration used in this workspace. 
 Supports the following subcommands:
 
 ```
-Usage: kumori-component [options] [command]
+Usage: kumori component [options] [command]
 
 Options:
 
@@ -88,7 +88,7 @@ With them, components can be added to the workspace, build distributable version
 Supports the following subcommands:
 
 ```
-Usage: kumori-deployment [options] [command]
+Usage: kumori deployment [options] [command]
 
 Options:
 
@@ -112,7 +112,7 @@ With them, a developer can define new configurations for the service application
 Supports the following subcommand:
 
 ```
-Usage: kumori-resource [options] [command]
+Usage: kumori resource [options] [command]
 
 Options:
 
@@ -138,7 +138,7 @@ A runtime is the environment used to execute components instances. In essence, a
 Usually, users will not create custom runtimes and use directly the native one. However, the command line application can help in the process of creating new runtimes with the following subcommands:
 
 ```
-Usage: kumori-runtime [options] [command]
+Usage: kumori runtime [options] [command]
 
 Options:
 
@@ -164,7 +164,7 @@ Finally, `register` and `unregister` subcommands are used to upload or remove im
 This command is used to manage the service applications in the workspace and includes the following subcommands:
 
 ````
-Usage: kumori-service [options] [command]
+Usage: kumori service [options] [command]
 
 Options:
 
@@ -185,7 +185,7 @@ The subcommands `add` and `remove` are used to define new service applications i
 This one is used mainly to change the default values used when adding new elements to the workspace.
 
 ```
-Usage: kumori-set [options] [command]
+Usage: kumori set [options] [command]
 
 Options:
 
@@ -203,7 +203,7 @@ Currently, only the default domain can be set, usually to the developer's compan
 The stamp command register new platforms in the command line client. By default, the client comes with Local Stamp and the official kumori platform registered.
 
 ```
-Usage: kumori-stamp [options] [command]
+Usage: kumori stamp [options] [command]
 
 Options:
 

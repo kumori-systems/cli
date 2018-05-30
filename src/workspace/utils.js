@@ -20,4 +20,3 @@ function checkIsNumber(param, errorMessage, min, max) {
     }
 }
 exports.checkIsNumber = checkIsNumber;
-//# sourceMappingURL=utils.js.map

@@ -23,4 +23,3 @@ program
     }));
 });
 program.parse(process.argv);
-//# sourceMappingURL=kumori-set.js.map

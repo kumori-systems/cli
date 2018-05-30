@@ -24,4 +24,3 @@ function silly(msg) {
     log(`Silly: ${msg}`);
 }
 exports.silly = silly;
-//# sourceMappingURL=logger.js.map

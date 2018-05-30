@@ -41,4 +41,3 @@ class ResourceManager extends element_manager_1.ElementManager {
     }
 }
 exports.ResourceManager = ResourceManager;
-//# sourceMappingURL=resource-manager.js.map

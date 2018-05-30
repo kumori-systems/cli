@@ -64,4 +64,3 @@ program
     }));
 });
 program.parse(process.argv);
-//# sourceMappingURL=kumori-service.js.map

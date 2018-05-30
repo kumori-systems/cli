@@ -71,4 +71,3 @@ program
     }));
 });
 program.parse(process.argv);
-//# sourceMappingURL=kumori-stamp.js.map
