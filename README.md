@@ -22,6 +22,7 @@ This application can be used to boost the process of developing services for Kum
   * [`service`](#service)
   * [`set`](#set)
   * [`stamp`](#stamp)
+* [License](#license)
 
 ## Installation
 
