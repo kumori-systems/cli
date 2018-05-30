@@ -65,6 +65,8 @@ exports.dist = function * (task) {
     .target('./build')
     .source('./README.md')
     .target('./build')
+    .source('./.gitignore')
+    .target('./build')
 }
 
 exports.test = function * (task) {
