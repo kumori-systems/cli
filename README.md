@@ -9,18 +9,10 @@ This application can be used to boost the process of developing services for Kum
 * Managing a workspace creating initial versions of elements under development by using templates.
 * Interacting with Kumori Platform.
 
-### The Kumori Platform Service Model
-
-The services deployed in Kumori Platform must follow a very specific service model known as the `Kumori Platform Service Model`. This model is based in the followinf main concepts:
-
-* Component: it is a runnable piece of code which must implement a given API. A component can interact with other components by using channels. A component can also have some configuration parameters and require some resources to work (CPU, RAM, persitent volumes, ...)
-* Service Application: defines a specific topology of components connecting their channels.
-* Service or deployment: it is an instance of a service application and it is composed by several instance of each of its components. The number of instances might variate in time.
-* Stamp: is an instance of the Kumori Platform. Only one stamp is considered THE Kumori Platform. However, in some cases specific stamps can be created by the Kumori team for specific purposes.
-
 ## Table of Contents
 
 * [Installation](#installation)
+* [The Kumori Platform Service Model](#the-kumori-platform-service-model)
 * [Commands](#commands)
   * [`init`](#init)
   * [`component`](#component)
@@ -36,6 +28,15 @@ The services deployed in Kumori Platform must follow a very specific service mod
 Install it as a npm package
 
     npm install -g git://git@github.com:kumori-systems/cli.git
+
+## The Kumori Platform Service Model
+
+The services deployed in Kumori Platform must follow a very specific service model known as the `Kumori Platform Service Model`. This model is based in the followinf main concepts:
+
+* Component: it is a runnable piece of code which must implement a given API. A component can interact with other components by using channels. A component can also have some configuration parameters and require some resources to work (CPU, RAM, persitent volumes, ...)
+* Service Application: defines a specific topology of components connecting their channels.
+* Service or deployment: it is an instance of a service application and it is composed by several instance of each of its components. The number of instances might variate in time.
+* Stamp: is an instance of the Kumori Platform. Only one stamp is considered THE Kumori Platform. However, in some cases specific stamps can be created by the Kumori team for specific purposes.
 
 ## Usage
 
