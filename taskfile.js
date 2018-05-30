@@ -70,7 +70,7 @@ exports.dist = function * (task) {
     .target('./build')
     .source('./.gitignore')
     .target('./build')
-    .source('./license')
+    .source('./LICENSE')
     .target('./build')
 }
 
