@@ -6,14 +6,6 @@
   "bin": {
     "kumori": "src/kumori"
   },
-  "scripts": {
-    "dist": "taskr dist",
-    "build": "taskr build",
-    "lint": "taskr lint",
-    "test": "taskr test ",
-    "clean": "taskr clean",
-    "superclean": "taskr superclean"
-  },
   "author": "Kumori Systems <info@kumori.systems>",
   "license": "MIT",
   "dependencies": {
