@@ -2,7 +2,7 @@
   "name": "@kumori/cli",
   "version": "1.0.0",
   "description": "Command line client for Kumori Platform",
-  "main": "src/index",
+  "main": "src/kumori",
   "bin": {
     "kumori": "src/kumori"
   },
