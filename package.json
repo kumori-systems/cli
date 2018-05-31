@@ -9,8 +9,8 @@
   "author": "Kumori Systems <info@kumori.systems>",
   "license": "MIT",
   "dependencies": {
-    "admission-client": "git+ssh://git@gitlab.com:ECloud/admission-client#master",
-    "commander": "^2.15.1",
-    "@kumori/workspace": "https://github.com/kumori-systems/workspace.git#master"
+    "@kumori/admission-client": "https://github.com/kumori-systems/admission-client.git#master",
+    "@kumori/workspace": "https://github.com/kumori-systems/workspace.git#master",
+    "commander": "^2.15.1"
   }
 }

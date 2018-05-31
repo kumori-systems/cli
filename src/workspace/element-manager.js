@@ -11,7 +11,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const utils_1 = require("./utils");
 const path = require("path");
 const fs = require("fs");
-const admission_client_1 = require("admission-client");
+const admission_client_1 = require("@kumori/admission-client");
 class ElementManager {
     constructor(configManager, subfolder) {
         this.configManager = configManager;

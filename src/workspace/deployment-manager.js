@@ -10,7 +10,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const element_manager_1 = require("./element-manager");
 const workspace_1 = require("@kumori/workspace");
-const admission_client_1 = require("admission-client");
+const admission_client_1 = require("@kumori/admission-client");
 class DeploymentManager extends element_manager_1.ElementManager {
     add(name, domain, service, version, template) {
         return __awaiter(this, void 0, void 0, function* () {
