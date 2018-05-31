@@ -3,7 +3,7 @@ import { Domain, Path, Version } from './types'
 import { getJSON, checkParameter, checkIsNumber } from './utils'
 import * as path from 'path'
 import * as fs from 'fs'
-import { AdmissionClient } from 'admission-client'
+import { AdmissionClient } from '@kumori/admission-client'
 
 export class ElementManager {
 
