@@ -16,6 +16,10 @@
   },
   "author": "Kumori Systems <info@kumori.systems>",
   "license": "MIT",
+  "repository": {
+    "type" : "git",
+    "url" : "https://github.com/kumori-systems/cli.git"
+  },
   "devDependencies": {
     "@taskr/shell": "^1.1.0",
     "@taskr/typescript": "^1.1.0",
@@ -26,8 +30,8 @@
     "typescript": "^2.8.3"
   },
   "dependencies": {
-    "@kumori/admission-client": "https://github.com/kumori-systems/admission-client.git#master",
-    "@kumori/workspace": "https://github.com/kumori-systems/workspace.git#master",
-    "commander": "^2.15.1"
+    "@kumori/admission-client": "1.0.0",
+    "@kumori/workspace": "1.0.0",
+    "commander": "2.15.1"
   }
 }
