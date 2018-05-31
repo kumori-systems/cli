@@ -5,7 +5,7 @@
   "main": "lib/index",
   "types": "lib/index.d.ts",
   "bin": {
-    "kumori": "src/kumori"
+    "kumori": "lib/kumori"
   },
   "scripts": {
     "build": "taskr build",
