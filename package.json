@@ -1,13 +1,30 @@
 {
-  "name": "@kumori/client",
+  "name": "@kumori/cli",
   "version": "1.0.0",
   "description": "Command line client for Kumori Platform",
-  "main": "src/index",
+  "main": "lib/index",
+  "types": "lib/index.d.ts",
   "bin": {
-    "kumori": "src/kumori"
+    "kumori": "lib/kumori"
+  },
+  "scripts": {
+    "build": "taskr build",
+    "lint": "taskr lint",
+    "test": "taskr test ",
+    "clean": "taskr clean",
+    "superclean": "taskr superclean"
   },
   "author": "Kumori Systems <info@kumori.systems>",
   "license": "MIT",
+  "devDependencies": {
+    "@taskr/shell": "^1.1.0",
+    "@taskr/typescript": "^1.1.0",
+    "@types/commander": "^2.12.2",
+    "@types/node": "^10.1.2",
+    "taskr": "^1.1.0",
+    "tslint": "^5.10.0",
+    "typescript": "^2.8.3"
+  },
   "dependencies": {
     "@kumori/admission-client": "https://github.com/kumori-systems/admission-client.git#master",
     "@kumori/workspace": "https://github.com/kumori-systems/workspace.git#master",
