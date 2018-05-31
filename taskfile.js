@@ -10,29 +10,17 @@ function getJSON(filepath) {
   return (new vm.Script(jsonString)).runInNewContext();
 }
 
-function *createProductionPackage(file) {
-  let packjson = JSON.parse(file.data.toString('utf8'))
-  if (packjson.devDependencies) {
-    delete packjson.devDependencies
-  }
-  if (packjson.scripts) {
-    delete packjson.scripts
-  }
-  file.base = path.parse(file.base).name + ".json";
-  file.data = new Buffer(JSON.stringify(packjson, null, 2));
-}
-
 exports.default = function * (task) {
   yield task.serial(['build']);
 }
 
 exports.clean = function * (task) {
-  yield task.clear(['build', 'coverage']);
+  yield task.clear(['lib-test', 'coverage']);
 }
 
 exports.superclean = function * (task) {
   task.parallel(['clean']);
-  yield task.clear(['dist'])
+  yield task.clear(['lib'])
 }
 
 exports.mrproper = function * (task) {
@@ -46,9 +34,9 @@ exports.build = function * (task) {
 
   yield task.source('src/**/*.ts')
     .typescript(tsopts)
-    .target('build/src')
+    .target('lib')
     .source('bin/**/*')
-    .target('./build/src', { mode: 0o775 })
+    .target('./lib', { mode: 0o775 })
 }
 
 exports.buildtest = function * (task) {
@@ -58,25 +46,12 @@ exports.buildtest = function * (task) {
   yield task.serial(['build'])
     .source("test/**/*.ts")
     .typescript(tsopts)
-    .target("build/test")
-}
-
-exports.dist = function * (task) {
-  yield task.serial(['build'])
-    .source('./package.json')
-    .run({every: true}, createProductionPackage)
-    .target('./build')
-    .source('./README.md')
-    .target('./build')
-    .source('./.gitignore')
-    .target('./build')
-    .source('./LICENSE')
-    .target('./build')
+    .target("lib-test/test")
 }
 
 exports.test = function * (task) {
   yield task.serial(['buildtest'])
-    .source("./build/test/**/*.test.js")
+    .source("./lib-test/test/**/*.test.js")
     .shell({
       cmd: 'mocha -u tdd --colors $glob',
       preferLocal: true,
