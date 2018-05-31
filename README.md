@@ -14,21 +14,21 @@ This application can be used to boost the process of developing services for Kum
 * [Installation](#installation)
 * [The Kumori Platform Service Model](#the-kumori-platform-service-model)
 * [Usage](#usage)
-  * [`init`](#init)
-  * [`component`](#component)
-  * [`deployment`](#deployment)
-  * [`resource`](#resource)
-  * [`runtime`](#runtime)
-  * [`service`](#service)
-  * [`set`](#set)
-  * [`stamp`](#stamp)
+  * [`init`](#init-command)
+  * [`component`](#component-command)
+  * [`deployment`](#deployment-command)
+  * [`resource`](#resource-command)
+  * [`runtime`](#runtime-command)
+  * [`service`](#service-command)
+  * [`set`](#set-command)
+  * [`stamp`](#stamp-command)
 * [License](#license)
 
 ## Installation
 
 Install it as a npm package
 
-    npm install -g git://git@github.com:kumori-systems/cli.git
+    npm install -g @kumori/cli
 
 ## The Kumori Platform Service Model
 
@@ -41,7 +41,18 @@ The services deployed in Kumori Platform must follow a very specific service mod
 
 ## Usage
 
-This application currently supports the following commands:
+To use `kumori` CLI first create an initial workspace
+
+```
+$ mkdir workspace
+$ cd workspace
+$ kumori init
+Initializing workspace following standard Kumori project hierarchy...
+Initializing kumoriConfig.json for this workspace...
+```
+The workspace structure is described in the [init command](#init-command) section.
+
+Once created, you can start developing services. This application currently supports the following commands:
 
 ```
 Usage: kumori [options] [command]
@@ -66,7 +77,7 @@ Commands:
 
 Each one of those commands have several subcommands.
 
-### Init
+### Init Command
 
 Created a brand new workspace. A workspace is a folder with the following structure:
 
@@ -86,7 +97,7 @@ Created a brand new workspace. A workspace is a folder with the following struct
 
 The `kumoriConfig.json` file contains the configuration used in this workspace. The `build` folder can be used to store bundles with prepacked elements. The `components`, `services`, `deployments`, `resources` and `runtimes` store the different elements under development. The `templates` folder contains the templates used by the scaffolding subcommands. Includes some templated by default but you can add your own ones. The scaffolding subcommands use [doT.js](http://olado.github.io/doT/index.html) template library.
 
-### Component
+### Component Command
 
 Supports the following subcommands:
 
@@ -108,7 +119,7 @@ Commands:
 
 With them, components can be added to the workspace, build distributable versions of them, register them to Kumori Platform (the official one or any other one), remove them to the workspace and unregister one version of that component in Kumori Platform.
 
-### Deployment
+### Deployment Command
 
 Supports the following subcommands:
 
@@ -132,7 +143,7 @@ Commands:
 
 With them, a developer can define new configurations for the service applications in the workspace, use them to create new services in Kumori Platform, list the current services hosted in Kumori Platform, remove a configuration from the workspace, scale a given service component or undeploy a hosted service.
 
-### Resource
+### Resource Command
 
 Supports the following subcommand:
 
@@ -153,7 +164,7 @@ Commands:
 
 In this case, a resource refers to platform elements that can be registered and assigned to services (like volumes, certificates and so on). The subcommands for this commands can be used to create define new resources, create them un a platform and remove previously created and registered resources.
 
-### Runtime
+### Runtime Command
 
 A runtime is the environment used to execute components instances. In essence, a runtime is a Docker image. Developers can create new runtimes from scratch but it is strongly recommended to extend one of the existing runtimes:
 
@@ -184,7 +195,7 @@ The `build` subcommand is used to create the Docker image. We strongly recommend
 
 Finally, `register` and `unregister` subcommands are used to upload or remove images from the Kumori Platform.
 
-### Service
+### Service Command
 
 This command is used to manage the service applications in the workspace and includes the following subcommands:
 
@@ -205,7 +216,7 @@ Commands:
 
 The subcommands `add` and `remove` are used to define new service applications in the workspace and remove them. The subcommands `register` and `unregister` are used to upload and remove the service applications from the Kumori Platform.
 
-### Set
+### Set Command
 
 This one is used mainly to change the default values used when adding new elements to the workspace.
 
@@ -223,7 +234,7 @@ Commands:
 
 Currently, only the default domain can be set, usually to the developer's company domain. The domain is used to name the elements.
 
-### Stamp
+### Stamp Command
 
 The stamp command register new platforms in the command line client. By default, the client comes with Local Stamp and the official kumori platform registered.
 
