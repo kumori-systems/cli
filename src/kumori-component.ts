@@ -65,6 +65,9 @@ program
     .option('-s, --stamp <stamp>', 'The target stamp', defaultStamp)
     .action((name, {companyDomain, componentVersion, stamp}) => {
         run(async () => {
+            if (!componentVersion) {
+                componentVersion = workspace.components.getCurrentVersion(name, companyDomain)
+            }
             logger.info(`Unregistering from stamp ${stamp} version ${componentVersion} of component ${name} from ${companyDomain}`)
             await workspace.components.unregister(name, companyDomain, componentVersion, stamp)
             logger.info(`Version ${componentVersion} unregistered`)

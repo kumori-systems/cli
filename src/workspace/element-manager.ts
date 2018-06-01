@@ -67,6 +67,20 @@ export class ElementManager {
         return path.join(runtimeFolder,'dist','bundle.zip');
     }
 
+    protected _getElementManifestPath(name: string, domain?: Domain): Path {
+        try {
+            let manifestPath = path.join(this._getElementFolder(name, domain), 'Manifest.json')
+            getJSON(manifestPath)
+            return manifestPath
+        } catch(error) {
+            if (error.code.localeCompare('ENOENT') == 0) {
+                throw new Error(`Manifest not found for ${name}.`)
+            } else {
+                throw new Error(`Error accesing ${name}'s manifest`)
+            }
+        }
+    }
+
     protected _getElementManifest(name: string, domain?: Domain): any {
         try {
             let manifestPath = path.join(this._getElementFolder(name, domain), 'Manifest.json')

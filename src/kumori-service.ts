@@ -53,6 +53,9 @@ program
     .option('-s, --stamp <stamp>', 'The target stamp', defaultStamp)
     .action((name, {companyDomain, serviceVersion, stamp}) => {
         run(async () => {
+            if (!serviceVersion) {
+                serviceVersion = workspace.runtimes.getCurrentVersion(name, companyDomain)
+            }
             logger.info(`Unregistering from stamp ${stamp} version ${serviceVersion} of service ${name} from ${companyDomain}`)
             await workspace.services.unregister(name, companyDomain, serviceVersion, stamp)
             logger.info(`Version ${serviceVersion} unregistered`)

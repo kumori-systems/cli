@@ -67,13 +67,16 @@ program
     .command('unregister <name>')
     .description('Unregisters a runtime from a stamp')
     .option('-d, --company-domain <company-domain>', 'The runtime domain', defaultDomain)
-    .option('-v, --version <version>', 'The runtime version')
+    .option('-v, --runtime-version <runtime-version>', 'The runtime version')
     .option('-s, --stamp <stamp>', 'The target stamp', defaultStamp)
-    .action((name, {companyDomain, version, stamp}) => {
+    .action((name, {companyDomain, runtimeVersion, stamp}) => {
         run(async () => {
-            logger.info(`Unregistering from stamp ${stamp} version ${version} of runtime ${name} from ${companyDomain}`)
-            await workspace.runtimes.unregister(name, companyDomain, version, stamp)
-            logger.info(`Version ${version} unregistered`)
+            if (!runtimeVersion) {
+                runtimeVersion = workspace.runtimes.getCurrentVersion(name, companyDomain)
+            }
+            logger.info(`Unregistering from stamp ${stamp} version ${runtimeVersion} of runtime ${name} from ${companyDomain}`)
+            await workspace.runtimes.unregister(name, companyDomain, runtimeVersion, stamp)
+            logger.info(`Version ${runtimeVersion} unregistered`)
         })
     })
 

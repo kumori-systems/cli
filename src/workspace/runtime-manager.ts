@@ -57,6 +57,10 @@ export class RuntimeManager extends ElementManager {
         this._checkParameter(domain, "Domain not defined")
         this._checkParameter(stamp, "Target stamp not defined")
         await this._checkStamp(stamp)
+        let exists = await this._checkElement(name, domain)
+        if (!exists) {
+            throw new Error(`Runtime "${name}" with domain "${domain}" not found in the workspace`)
+        }
         let bundlePath = this._getBundleFilePath(name, domain)
         await workspace.register([bundlePath], stamp)
         let manifest = this._getElementManifest(name, domain)
@@ -76,6 +80,7 @@ export class RuntimeManager extends ElementManager {
         this._checkParameter(version, "Runtime version not defined")
         this._checkParameter(stamp, "Target stamp not defined")
         await this._checkStamp(stamp)
-        return Promise.reject("NOT IMPLEMENTED");
+        let urn = workspace.runtime.generateUrn(name, domain, version)
+        await workspace.stamp.unregister(stamp, urn)
     }
 }
