@@ -33,7 +33,7 @@ export class ComponentManager extends ElementManager {
         this._checkParameter(domain, "Domain not defined")
         let elementExists = await this._checkElement(name, domain)
         if (!elementExists) {
-            throw new Error(`Component ${name} not found for doman ${domain}`)
+            throw new Error(`Component "${name}" not found for doman "${domain}"`)
         }
         let config = {
             domain: domain,
@@ -76,7 +76,11 @@ export class ComponentManager extends ElementManager {
     public async remove(name: string, domain: Domain): Promise<void> {
         this._checkParameter(name, "Name not defined")
         this._checkParameter(domain, "Domain not defined")
-        throw new Error("NOT IMPLEMENTED")
+        if (await this._checkElement(name, domain)) {
+            await this._removeElement(name, domain)
+        } else {
+            throw new Error(`Component "${name}" not found in the workspace for domain "${domain}"`)
+        }
     }
 
     public async unregister (name: string, domain: Domain, version: Version, stamp: string): Promise<void> {

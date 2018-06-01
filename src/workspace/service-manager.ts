@@ -43,7 +43,7 @@ export class ServiceManager extends ElementManager {
                     return parts[parts.length - 1]
                 }
             }
-            throw new Error(`Service ${name} registration failed for domain ${domain} and stamp ${stamp}`)
+            throw new Error(`Service "${name}" registration failed for domain "${domain}" and stamp "${stamp}"`)
         } catch(error) {
             let message = error.message || error
             if (message.indexOf("already in storage") != -1) {
@@ -58,7 +58,11 @@ export class ServiceManager extends ElementManager {
     public async remove (name: string, domain: Domain): Promise<void> {
         this._checkParameter(name, "Name not defined")
         this._checkParameter(domain, "Domain not defined")
-        throw new Error("NOT IMPLEMENTED")
+        if (await this._checkElement(name, domain)) {
+            await this._removeElement(name, domain)
+        } else {
+            throw new Error(`Service "${name}" not found in the workspace for domain "${domain}"`)
+        }
     }
 
     public async unregister (name: string, domain: Domain, version: Version, stamp: string): Promise<void> {

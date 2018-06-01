@@ -68,10 +68,14 @@ export class RuntimeManager extends ElementManager {
         return parts[parts.length - 1]
     }
 
-    public remove (name: string, domain: Domain): Promise<void> {
+    public async remove (name: string, domain: Domain): Promise<void> {
         this._checkParameter(name, "Name not defined")
         this._checkParameter(domain, "Domain not defined")
-        return Promise.reject("NOT IMPLEMENTED");
+        if (await this._checkElement(name, domain)) {
+            await this._removeElement(name, domain)
+        } else {
+            throw new Error(`Runtime "${name}" not found in the workspace for domain "${domain}"`)
+        }
     }
 
     public async unregister (name: string, domain: Domain, version: Version, stamp: string): Promise<void> {

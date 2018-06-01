@@ -2,7 +2,7 @@ import { WorkspaceConfigManager, StampConfig } from './workspace-manager'
 import { Domain, Path, Version } from './types'
 import { getJSON, checkParameter, checkIsNumber } from './utils'
 import * as path from 'path'
-import * as fs from 'fs'
+import * as fs from 'fs-extra'
 import { AdmissionClient } from '@kumori/admission-client'
 
 export class ElementManager {
@@ -128,5 +128,10 @@ export class ElementManager {
 
     protected _checkIsNumber(param: any, errorMessage: string, min: number, max: number): void {
         return checkIsNumber(param, errorMessage, min, max)
+    }
+
+    protected async _removeElement(name: string, domain?: Domain): Promise<void> {
+        let elemPath = this._getElementFolder(name, domain)
+        await fs.remove(elemPath)
     }
 }
