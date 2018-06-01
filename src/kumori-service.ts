@@ -37,8 +37,13 @@ program
     .command('remove <name>')
     .description('Removes an existing service from the workspace')
     .option('-d, --company-domain <company-domain>', 'The service domain', defaultDomain)
-    .action((name, {companyDomain}) => {
+    .option('--force', 'Required to remove this service', false)
+    .action((name, {companyDomain, force}) => {
         run(async () => {
+            if (!force) {
+                logger.info(`This will remove ${name} from the workspace. If you are sure about this, use the --force flag`)
+                process.exit()
+            }
             logger.info(`Removing service ${name} from ${companyDomain}`)
             await workspace.services.remove(name, companyDomain)
             logger.info("Service removed from the workspace")

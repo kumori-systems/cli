@@ -53,19 +53,28 @@ export class RuntimeManager extends ElementManager {
     }
 
     public async register (name: string, domain: Domain, stamp: string): Promise<Version> {
-        this._checkParameter(name, "Name not defined")
-        this._checkParameter(domain, "Domain not defined")
-        this._checkParameter(stamp, "Target stamp not defined")
-        await this._checkStamp(stamp)
-        let exists = await this._checkElement(name, domain)
-        if (!exists) {
-            throw new Error(`Runtime "${name}" with domain "${domain}" not found in the workspace`)
+        try {
+            this._checkParameter(name, "Name not defined")
+            this._checkParameter(domain, "Domain not defined")
+            this._checkParameter(stamp, "Target stamp not defined")
+            await this._checkStamp(stamp)
+            let exists = await this._checkElement(name, domain)
+            if (!exists) {
+                throw new Error(`Runtime "${name}" with domain "${domain}" not found in the workspace`)
+            }
+            let bundlePath = this._getBundleFilePath(name, domain)
+            await workspace.register([bundlePath], stamp)
+            let manifest = this._getElementManifest(name, domain)
+            let parts = manifest.name.split('/')
+            return parts[parts.length - 1]
+        } catch(error) {
+            let message = error.message || error
+            if (message.indexOf("already in storage") != -1) {
+                throw new Error(`Runtime "${name}" from domain "${domain}" already registered in "${stamp}"`)
+            } else {
+                throw error
+            }
         }
-        let bundlePath = this._getBundleFilePath(name, domain)
-        await workspace.register([bundlePath], stamp)
-        let manifest = this._getElementManifest(name, domain)
-        let parts = manifest.name.split('/')
-        return parts[parts.length - 1]
     }
 
     public async remove (name: string, domain: Domain): Promise<void> {
