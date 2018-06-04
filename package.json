@@ -31,7 +31,7 @@
   },
   "dependencies": {
     "@kumori/admission-client": "1.0.0",
-    "@kumori/workspace": "1.0.0",
+    "@kumori/workspace": "1.0.1",
     "commander": "2.15.1"
   }
 }
