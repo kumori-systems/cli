@@ -1,6 +1,6 @@
 {
   "name": "@kumori/cli",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Command line client for Kumori Platform",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -17,8 +17,8 @@
   "author": "Kumori Systems <info@kumori.systems>",
   "license": "MIT",
   "repository": {
-    "type" : "git",
-    "url" : "https://github.com/kumori-systems/cli.git"
+    "type": "git",
+    "url": "https://github.com/kumori-systems/cli.git"
   },
   "devDependencies": {
     "@taskr/shell": "^1.1.0",
