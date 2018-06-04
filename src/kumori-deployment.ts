@@ -83,8 +83,13 @@ program
 program
     .command('remove <name>')
     .description('Removes an existing deployment from the workspace')
-    .action((name) => {
+    .option('--force', 'Required to remove this deployment', false)
+    .action((name, {force}) => {
         run(async () => {
+            if (!force) {
+                logger.info(`This will remove ${name} from the workspace. If you are sure about this, use the --force flag`)
+                process.exit()
+            }
             logger.info(`Removing deployment configuration ${name}`)
             await workspace.deployments.remove(name)
             logger.info(`Deployment configuration removed from the workspace`)
