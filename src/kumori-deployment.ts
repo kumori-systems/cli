@@ -28,7 +28,7 @@ program
     .action((name, service, {companyDomain, serviceVersion, template}) => {
         run(async () => {
             if (!serviceVersion) {
-                serviceVersion = workspace.services.getCurrentVersion(name, companyDomain)
+                serviceVersion = workspace.services.getCurrentVersion(service, companyDomain)
                 logger.info(`Service version set to ${serviceVersion}`)
             }
             logger.info(`Adding a deployment configuration ${name} for version ${serviceVersion} of service ${service} using template ${template}`)

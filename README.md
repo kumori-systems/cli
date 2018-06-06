@@ -4,7 +4,7 @@ This is a command line interface to boost the process of developing elements for
 
 ## Description
 
-This application can be used to boost the process of developing services for Kumori Platform. This application helps with:
+This application can be used to boost the process of developing deployments services for Kumori Platform. This application helps with:
 
 * Managing a workspace creating initial versions of elements under development by using templates.
 * Interacting with Kumori Platform.
@@ -32,11 +32,11 @@ Install it as a npm package
 
 ## The Kumori Platform Service Model
 
-The services deployed in Kumori Platform must follow a very specific service model known as the `Kumori Platform Service Model`. This model is based in the followinf main concepts:
+The services deployed in Kumori Platform must follow a very specific service model known as the `Kumori Platform Service Model`. This model is based in the following main concepts:
 
 * Component: it is a runnable piece of code which must implement a given API. A component can interact with other components by using channels. A component can also have some configuration parameters and require some resources to work (CPU, RAM, persitent volumes, ...)
-* Service Application: defines a specific topology of components connecting their channels.
-* Service or deployment: it is an instance of a service application and it is composed by several instance of each of its components. The number of instances might variate in time.
+* Deployment: defines a specific topology of components connecting their channels.
+* Service or deployment: it is an instance of a deployment and it is composed by several instance of each of its components. The number of instances might variate in time.
 * Stamp: is an instance of the Kumori Platform. Only one stamp is considered THE Kumori Platform. However, in some cases specific stamps can be created by the Kumori team for specific purposes.
 
 ## Usage
@@ -141,7 +141,7 @@ Commands:
   undeploy [options] <urn>                  Undeploys a service from the target stamp
 ```
 
-With them, a developer can define new configurations for the service applications in the workspace, use them to create new services in Kumori Platform, list the current services hosted in Kumori Platform, remove a configuration from the workspace, scale a given service component or undeploy a hosted service.
+With them, a developer can define new configurations for the deployments in the workspace, use them to create new services in Kumori Platform, list the current services hosted in Kumori Platform, remove a configuration from the workspace, scale a component of a given deployment or undeploy a hosted service.
 
 ### Resource Command
 
@@ -162,7 +162,7 @@ Commands:
   unregister [options] <name>  Unregisters a resource from a stamp
 ```
 
-In this case, a resource refers to platform elements that can be registered and assigned to services (like volumes, certificates and so on). The subcommands for this commands can be used to create define new resources, create them un a platform and remove previously created and registered resources.
+In this case, a resource refers to platform elements that can be registered and assigned to deployments (like volumes, certificates and so on). The subcommands for this commands can be used to create define new resources, create them un a platform and remove previously created and registered resources.
 
 ### Runtime Command
 
@@ -197,7 +197,7 @@ Finally, `register` and `unregister` subcommands are used to upload or remove im
 
 ### Service Command
 
-This command is used to manage the service applications in the workspace and includes the following subcommands:
+This command is used to manage the deployments in the workspace and includes the following subcommands:
 
 ````
 Usage: kumori service [options] [command]
@@ -214,7 +214,7 @@ Commands:
   unregister [options] <name>  Unregisters a service from a stamp
 ````
 
-The subcommands `add` and `remove` are used to define new service applications in the workspace and remove them. The subcommands `register` and `unregister` are used to upload and remove the service applications from the Kumori Platform.
+The subcommands `add` and `remove` are used to define new deployments in the workspace and remove them. The subcommands `register` and `unregister` are used to upload and remove the deployments from the Kumori Platform.
 
 ### Set Command
 
