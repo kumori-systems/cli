@@ -22,3 +22,5 @@ Implemented unregister commands for components, services, runtimes and resources
 ## v1.0.4
 
 Minor improvements on README
+In `kumori deployment add` the current service version is used if it is not specified.
+Changed dependency with @kumori/workspace to 1.0.1
