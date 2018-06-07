@@ -39,7 +39,11 @@ export class ComponentManager extends ElementManager {
         if (!runtimeUrn) {
             throw new Error(`Runtime not found for component "${name} and domain "${domain}"`)
         }
-        await workspace.runtime.install(runtimeUrn)
+        try {
+            await workspace.runtime.install(runtimeUrn)
+        } catch(error) {
+            throw new Error(`Cannot install runtime image for component "${name}"`)
+        }
         let config = {
             domain: domain,
             name: name
