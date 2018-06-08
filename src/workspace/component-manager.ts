@@ -1,5 +1,5 @@
 import { ElementInfo } from './element-info'
-import { Domain, Version, Template, Path } from './types'
+import { Domain, Version, Template, Path, Urn } from './types'
 import { workspace, ComponentConfig } from '@kumori/workspace'
 import { ElementManager } from './element-manager'
 
@@ -34,6 +34,15 @@ export class ComponentManager extends ElementManager {
         let elementExists = await this._checkElement(name, domain)
         if (!elementExists) {
             throw new Error(`Component "${name}" not found for doman "${domain}"`)
+        }
+        let runtimeUrn = this._getComponentRuntime(name, domain)
+        if (!runtimeUrn) {
+            throw new Error(`Runtime not found for component "${name} and domain "${domain}"`)
+        }
+        try {
+            await workspace.runtime.install(runtimeUrn)
+        } catch(error) {
+            throw new Error(`Cannot install runtime image for component "${name}"`)
         }
         let config = {
             domain: domain,
@@ -91,5 +100,10 @@ export class ComponentManager extends ElementManager {
         await this._checkStamp(stamp)
         let urn = workspace.component.generateUrn(name, domain, version)
         await workspace.stamp.unregister(stamp, urn)
+    }
+
+    private _getComponentRuntime (name: string, domain: Domain): Urn {
+        let manifest = this._getElementManifest(name, domain)
+        return manifest.runtime
     }
 }
