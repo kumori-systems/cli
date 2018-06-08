@@ -1,6 +1,6 @@
 {
   "name": "@kumori/cli",
-  "version": "1.0.0",
+  "version": "1.0.4",
   "description": "Command line client for Kumori Platform",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -30,8 +30,8 @@
     "typescript": "^2.8.3"
   },
   "dependencies": {
-    "@kumori/admission-client": "1.0.0",
-    "@kumori/workspace": "1.0.1",
+    "@kumori/admission-client": "^1.0.0",
+    "@kumori/workspace": "^1.0.2",
     "@types/fs-extra": "^5.0.2",
     "commander": "2.15.1",
     "dockerode": "^2.5.5",
