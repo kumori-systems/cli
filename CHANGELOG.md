@@ -1,16 +1,18 @@
 # Changelog
 
-## v1.0.0
+## v1.0.6
 
-Initial version. Not published due to NPM repository problems.
+Corrected bug extracting development image when `kumori component build` is executed.
 
-## v1.0.1
+## v1.0.5
 
-Identical to 1.0.0. Patch version increased due to NPM repository problems.
+Now "component build" installs the component runtime image if it is not already installed.
 
-## v1.0.2
+## v1.0.4
 
-Identical to 1.0.1 but with workspace dependency changed to 1.0.1.
+Minor improvements on README
+In `kumori deployment add` the current service version is used if it is not specified.
+Changed dependency with @kumori/workspace to 1.0.1
 
 ## v1.0.3
 
@@ -19,12 +21,14 @@ Implemented register commands for components, services, runtimes and resources.
 Implemented remove commands for components, services, deployments, runtimes and resources.
 Implemented unregister commands for components, services, runtimes and resources.
 
-## v1.0.4
+## v1.0.2
 
-Minor improvements on README
-In `kumori deployment add` the current service version is used if it is not specified.
-Changed dependency with @kumori/workspace to 1.0.1
+Identical to 1.0.1 but with workspace dependency changed to 1.0.1.
 
-## v1.0.5
+## v1.0.1
 
-Now "component build" installs the component runtime image if it is not already installed.
+Identical to 1.0.0. Patch version increased due to NPM repository problems.
+
+## v1.0.0
+
+Initial version. Not published due to NPM repository problems.
