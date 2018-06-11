@@ -1,6 +1,6 @@
 {
   "name": "@kumori/cli",
-  "version": "1.0.4",
+  "version": "1.0.6",
   "description": "Command line client for Kumori Platform",
   "main": "lib/index",
   "types": "lib/index.d.ts",
