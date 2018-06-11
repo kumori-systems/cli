@@ -52,12 +52,14 @@ program
 program
     .command('deploy <name>')
     .description('Creates a new service in the target stamp')
+    .option('-i, --skip-inbounds', 'Random domains are not created to this service entrypoints')
     .option('-s, --stamp <stamp>', 'The target stamp', defaultStamp)
-    .action((name, {stamp}) => {
+    .action((name, {skipInbounds, stamp}) => {
         run(async () => {
             let service = await workspace.deployments.getDeploymentServiceName(name)
             logger.info(`Deploying service ${service} in stamp ${stamp} using configuration ${name}`)
-            let data = await workspace.deployments.deploy(name, stamp)
+            let inbounds = !skipInbounds
+            let data = await workspace.deployments.deploy(name, stamp, inbounds)
             if (data.deployments){
                 for (let deploymentData of data.deployments) {
                     printDeploymentData(deploymentData)

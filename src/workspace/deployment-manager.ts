@@ -57,11 +57,11 @@ export class DeploymentManager extends ElementManager {
         throw new Error('NOT IMPLEMENTED')
     }
 
-    public async deploy (name: string, stamp: string): Promise<RegistrationData> {
+    public async deploy (name: string, stamp: string, addInbounds: boolean): Promise<RegistrationData> {
         this._checkParameter(name, "Name not defined")
         this._checkParameter(stamp, "Target stamp not defined")
         await this._checkStamp(stamp)
-        let info:RegistrationResult = await workspace.deployWithDependencies(name, stamp)
+        let info:RegistrationResult = await workspace.deployWithDependencies(name, stamp, addInbounds)
         if (!info.deployments) {
             throw new Error('Nothing deployed')
         }
@@ -283,6 +283,7 @@ export class DeploymentManager extends ElementManager {
                         })
                     }
                 }
+                data.roles.push(roleData)
             }
         }
         return data
