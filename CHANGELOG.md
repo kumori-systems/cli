@@ -1,5 +1,10 @@
 # Changelog
 
+## v1.0.7
+
+Added a new flag to `kumori deployment deploy` to avoid creating default inbounds with random domains. By default this flag is set to false.
+Added new templates for the "hello world" example used in the quick start guide.
+
 ## v1.0.6
 
 Corrected bug extracting development image when `kumori component build` is executed.
