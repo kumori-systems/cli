@@ -113,7 +113,7 @@ export class ElementManager {
             if (error.code && (error.code.localeCompare('ECONNREFUSED') == 0)) {
                 error.message = `Connection to ${stamp} refused`
             } else if (error.message && (error.message.indexOf("Authentication error") != -1)) {
-                error.message = `Authentication error. Please check you authentication token for stamp "${stamp}". You can get your token from your user settings in the platform dashboard.`
+                error.message = `Authentication error. Please check your authentication token for stamp "${stamp}". You can get your token from your user settings in the platform dashboard.`
             } else {
                 error.message = `Unable to connect to ${stamp}`
             }
