@@ -3,6 +3,7 @@
 ## v1.0.8
 
 Now the CLI shows an error and the help if an unknown command or subcommand is called.
+Improved some error messages.
 
 ## v1.0.7
 
