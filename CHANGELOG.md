@@ -1,5 +1,9 @@
 # Changelog
 
+## v1.0.8
+
+Now the CLI shows an error and the help if an unknown command or subcommand is called.
+
 ## v1.0.7
 
 Added a new flag to `kumori deployment deploy` to avoid creating default inbounds with random domains. By default this flag is set to false.

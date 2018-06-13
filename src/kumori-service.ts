@@ -1,7 +1,7 @@
 import * as program from 'commander'
 import * as logger from './logger'
 import { workspace } from './workspace';
-import { run } from './utils'
+import { run, executeProgram } from './utils'
 
 let defaultDomain = workspace.components.configManager.config.domain
 let defaultTemplate = workspace.components.configManager.config.service.template
@@ -67,4 +67,5 @@ program
         })
     })
 
+executeProgram(program)
 program.parse(process.argv);

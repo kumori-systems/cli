@@ -1,7 +1,7 @@
 import * as program from 'commander'
 import * as logger from './logger'
 import { workspace } from './workspace';
-import { run } from './utils'
+import { run, executeProgram } from './utils'
 
 program
     .command('domain <domain>')
@@ -15,4 +15,5 @@ program
     })
 
 
+executeProgram(program)
 program.parse(process.argv);

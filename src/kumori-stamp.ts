@@ -1,7 +1,7 @@
 import * as program from 'commander'
 import * as logger from './logger'
 import { workspace, StampConfig } from './workspace';
-import { run } from './utils'
+import { run, executeProgram } from './utils'
 
 program
     .command('add <name> <admission>')
@@ -65,4 +65,5 @@ program
         })
     })
 
+executeProgram(program)
 program.parse(process.argv);

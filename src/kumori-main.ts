@@ -2,7 +2,7 @@
 
 import * as program from 'commander'
 import * as logger from './logger'
-import { run } from './utils'
+import { run, executeProgram } from './utils'
 
 import { workspace } from './workspace';
 
@@ -33,6 +33,7 @@ module.exports = function (argv: string[]): void {
             })
         })
 
-    program
-        .parse(process.argv)
+    executeProgram(program)
+    // program
+    //     .parse(process.argv)
 }
