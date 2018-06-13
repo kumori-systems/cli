@@ -16,7 +16,7 @@ export { RuntimeInfo } from './runtime-manager'
 export { ServiceInfo } from './service-manager'
 export { StampConfig } from './workspace-manager'
 
-import { workspace as itiWorkspace, configuration as iticonf, Deployment, DeploymentConfig, ServiceConfig, RegistrationResult } from 'workspace'
+import { workspace as itiWorkspace, configuration as iticonf, Deployment, DeploymentConfig, ServiceConfig, RegistrationResult } from '@kumori/workspace'
 
 const CONFIG_FILE_NAME = 'kumoriConfig.json'
 const WORKSPACE_CONFIG_FILE = path.join(process.cwd(), CONFIG_FILE_NAME);

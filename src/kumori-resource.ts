@@ -37,8 +37,13 @@ program
     .command('remove <name>')
     .description('Removes an existing resource from the workspace')
     .option('-d, --company-domain <company-domain>', 'The resource domain', defaultDomain)
-    .action((name, {companyDomain}) => {
+    .option('--force', 'Required to remove this resource', false)
+    .action((name, {companyDomain, force}) => {
         run(async () => {
+            if (!force) {
+                logger.info(`This will remove ${name} from the workspace. If you are sure about this, use the --force flag`)
+                process.exit()
+            }
             logger.info(`Removing resource ${name} from ${companyDomain}`)
             await workspace.resources.remove(name, companyDomain)
             logger.info("Resource removed from the workspace")

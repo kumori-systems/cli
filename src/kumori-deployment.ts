@@ -28,7 +28,7 @@ program
     .action((name, service, {companyDomain, serviceVersion, template}) => {
         run(async () => {
             if (!serviceVersion) {
-                serviceVersion = workspace.services.getCurrentVersion(name, companyDomain)
+                serviceVersion = workspace.services.getCurrentVersion(service, companyDomain)
                 logger.info(`Service version set to ${serviceVersion}`)
             }
             logger.info(`Adding a deployment configuration ${name} for version ${serviceVersion} of service ${service} using template ${template}`)
@@ -52,12 +52,14 @@ program
 program
     .command('deploy <name>')
     .description('Creates a new service in the target stamp')
+    .option('-i, --skip-inbounds', 'Random domains are not created to this service entrypoints')
     .option('-s, --stamp <stamp>', 'The target stamp', defaultStamp)
-    .action((name, {stamp}) => {
+    .action((name, {skipInbounds, stamp}) => {
         run(async () => {
             let service = await workspace.deployments.getDeploymentServiceName(name)
             logger.info(`Deploying service ${service} in stamp ${stamp} using configuration ${name}`)
-            let data = await workspace.deployments.deploy(name, stamp)
+            let inbounds = !skipInbounds
+            let data = await workspace.deployments.deploy(name, stamp, inbounds)
             if (data.deployments){
                 for (let deploymentData of data.deployments) {
                     printDeploymentData(deploymentData)
@@ -83,8 +85,13 @@ program
 program
     .command('remove <name>')
     .description('Removes an existing deployment from the workspace')
-    .action((name) => {
+    .option('--force', 'Required to remove this deployment', false)
+    .action((name, {force}) => {
         run(async () => {
+            if (!force) {
+                logger.info(`This will remove ${name} from the workspace. If you are sure about this, use the --force flag`)
+                process.exit()
+            }
             logger.info(`Removing deployment configuration ${name}`)
             await workspace.deployments.remove(name)
             logger.info(`Deployment configuration removed from the workspace`)

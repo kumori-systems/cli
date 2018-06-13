@@ -1,8 +1,8 @@
 import { ElementInfo } from './element-info'
 import { Domain, Version, Template, Urn } from './types'
 import { ElementManager } from './element-manager'
-import { workspace, Deployment, DeploymentConfig, ServiceConfig, RegistrationResult } from 'workspace'
-import { ScalingDeploymentModification } from 'admission-client'
+import { workspace, Deployment, DeploymentConfig, ServiceConfig, RegistrationResult } from '@kumori/workspace'
+import { ScalingDeploymentModification } from '@kumori/admission-client'
 
 export interface DeploymentInfo extends ElementInfo {
 }
@@ -57,11 +57,11 @@ export class DeploymentManager extends ElementManager {
         throw new Error('NOT IMPLEMENTED')
     }
 
-    public async deploy (name: string, stamp: string): Promise<RegistrationData> {
+    public async deploy (name: string, stamp: string, addInbounds: boolean): Promise<RegistrationData> {
         this._checkParameter(name, "Name not defined")
         this._checkParameter(stamp, "Target stamp not defined")
         await this._checkStamp(stamp)
-        let info:RegistrationResult = await workspace.deployWithDependencies(name, stamp)
+        let info:RegistrationResult = await workspace.deployWithDependencies(name, stamp, addInbounds)
         if (!info.deployments) {
             throw new Error('Nothing deployed')
         }
@@ -130,9 +130,13 @@ export class DeploymentManager extends ElementManager {
         return data
     }
 
-    public remove (name: string): Promise<void> {
+    public async remove (name: string): Promise<void> {
         this._checkParameter(name, "Name not defined")
-        return Promise.reject("NOT IMPLEMENTED");
+        if (await this._checkElement(name)) {
+            await this._removeElement(name)
+        } else {
+            throw new Error(`Deployment "${name}" not found in the workspace`)
+        }
     }
 
     public async scale (urn: string, role:string, instances: number, stamp: string): Promise<number> {
@@ -143,7 +147,7 @@ export class DeploymentManager extends ElementManager {
         this._checkParameter(stamp, "Target stamp not defined")
         await this._checkStamp(stamp)
         if (!(await this._checkDeployment(urn, stamp))) {
-            return Promise.reject(`Deployment not found in ${stamp} with URN "${urn}"`)
+            return Promise.reject(`Deployment not found in "${stamp}" with URN "${urn}"`)
         }
         let modification = new ScalingDeploymentModification();
         modification.deploymentURN = urn;
@@ -157,7 +161,7 @@ export class DeploymentManager extends ElementManager {
         } else {
             let newInstances:number = parseInt(value, 10)
             if (isNaN(newInstances)) {
-                throw new Error(`Error scaling role ${role} in servce ${urn}`)
+                throw new Error(`Error scaling role "${role}" in servce "${urn}"`)
             }
             return newInstances
         }
@@ -168,7 +172,7 @@ export class DeploymentManager extends ElementManager {
         this._checkParameter(stamp, "Target stamp not defined")
         await this._checkStamp(stamp)
         if (!(await this._checkDeployment(urn, stamp))) {
-            return Promise.reject(`Deployment not found in ${stamp} with URN "${urn}"`)
+            return Promise.reject(`Deployment not found in "${stamp}" with URN "${urn}"`)
         }
         let admission = await this._getAdmissionClient(stamp)
         let result = await admission.undeploy(urn)
@@ -196,12 +200,12 @@ export class DeploymentManager extends ElementManager {
                 return true
             }
         } catch(error) {
-            if (error.message && (error.message.indexOf(`Deployment ${name} does not exist`) != -1)) {
+            if (error.message && (error.message.indexOf(`Deployment "${name}" does not exist`) != -1)) {
                 return false
             } else if (error.message && (error.message.indexOf("Unexpected token u in JSON at position 0") != -1)) {
                 return false
             } else {
-                throw new Error(`Failed checking deployment ${name} in stamp ${stamp}`)
+                throw new Error(`Failed checking deployment "${name}" in stamp "${stamp}"`)
             }
         }
     }
@@ -279,6 +283,7 @@ export class DeploymentManager extends ElementManager {
                         })
                     }
                 }
+                data.roles.push(roleData)
             }
         }
         return data
