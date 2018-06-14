@@ -11,6 +11,7 @@ export class ServiceManager extends ElementManager {
         this._checkParameter(name, "Name not defined")
         this._checkParameter(domain, "Domain not defined")
         this._checkParameter(template, "Template not defined")
+        this._checkName(name)
         let config:ServiceConfig = {
             name: name,
             domain: domain

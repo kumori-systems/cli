@@ -1,6 +1,6 @@
 import { WorkspaceConfigManager, StampConfig } from './workspace-manager'
 import { Domain, Path, Version } from './types'
-import { getJSON, checkParameter, checkIsNumber } from './utils'
+import { getJSON, checkName, checkParameter, checkIsNumber, checkName } from './utils'
 import * as path from 'path'
 import * as fs from 'fs-extra'
 import { AdmissionClient } from '@kumori/admission-client'
@@ -113,7 +113,7 @@ export class ElementManager {
             if (error.code && (error.code.localeCompare('ECONNREFUSED') == 0)) {
                 error.message = `Connection to ${stamp} refused`
             } else if (error.message && (error.message.indexOf("Authentication error") != -1)) {
-                error.message = `Authentication error. Please check your authentication token for stamp "${stamp}". You can get your token from your user settings in the platform dashboard.`
+                error.message = `Authentication failure. Maybe your token expired or is not set. Use "kumori stamp update ${stamp} -t <TOKEN>" command to change it. Access your user settings in the platform dashboard to get a valid token.`
             } else {
                 error.message = `Unable to connect to ${stamp}`
             }
@@ -135,5 +135,9 @@ export class ElementManager {
     protected async _removeElement(name: string, domain?: Domain): Promise<void> {
         let elemPath = this._getElementFolder(name, domain)
         await fs.remove(elemPath)
+    }
+
+    protected _checkName(name: string): void {
+        return checkName(name);
     }
 }
