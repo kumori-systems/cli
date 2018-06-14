@@ -33,7 +33,7 @@ module.exports = function (argv: string[]): void {
             })
         })
 
-    executeProgram(program)
-    // program
-    //     .parse(process.argv)
+        executeProgram(program)
+        // program
+        //     .parse(process.argv)
 }

@@ -60,6 +60,11 @@ program
             logger.info(`Deploying service ${service} in stamp ${stamp} using configuration ${name}`)
             let inbounds = !skipInbounds
             let data = await workspace.deployments.deploy(name, stamp, inbounds)
+            if (data.errors) {
+                for (let error of data.errors) {
+                    logger.error(error)
+                }
+            }
             if (data.deployments){
                 for (let deploymentData of data.deployments) {
                     printDeploymentData(deploymentData)

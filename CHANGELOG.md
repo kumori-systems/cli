@@ -4,6 +4,7 @@
 
 Now the CLI shows an error and the help if an unknown command or subcommand is called.
 Improved some error messages.
+Added `kumori stamp list` command to list detailed information about stamps registered in a workspace.
 
 ## v1.0.7
 
