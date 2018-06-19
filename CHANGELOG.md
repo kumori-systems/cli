@@ -2,10 +2,13 @@
 
 ## v1.0.8
 
-Now the CLI shows an error and the help if an unknown command or subcommand is called.
+Now the CLI shows an error and help if an unknown command or subcommand is called.
 Improved some error messages.
 Added `kumori stamp list` command to list detailed information about stamps registered in a workspace.
+Changed `@kumori/workspace` dependency to 1.0.5.
 Bug fix. Now only names with alphanumeric characters are allowed.
+Bug fix. Runtimes with empty Dockerfile (i.e., with empty `FROM` key) do not fail when `kumori runtime build` is executed.
+Bug fix. The command `kumori -h` (a.k.a. `kumori --help`) was showing a `command not found` error message.
 
 ## v1.0.7
 
