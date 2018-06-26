@@ -3,9 +3,9 @@ import * as logger from './logger'
 import { workspace, DeploymentData, RegistrationData } from './workspace/index'
 import { run, executeProgram } from './utils'
 
-let defaultDomain = workspace.components.configManager.config.domain
-let defaultTemplate = workspace.components.configManager.config.deployment.template
-let defaultStamp = workspace.components.configManager.config.defaultStamp.name
+let defaultDomain = workspace.configManager.config.domain
+let defaultTemplate = workspace.configManager.config.deployment.template
+let defaultStamp = workspace.configManager.config.defaultStamp.name
 
 function printDeploymentData(data: DeploymentData) {
     logger.info(`---------------------------------------------------------`)

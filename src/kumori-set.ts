@@ -9,7 +9,7 @@ program
     .action((domain) => {
         run(async () => {
             logger.info(`Seting default domain to ${domain}`)
-            await workspace.config.setDefaultDomain(domain)
+            await workspace.configManager.setDefaultDomain(domain)
             logger.info(`New domain set`)
         })
     })

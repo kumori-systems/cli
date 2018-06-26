@@ -14,6 +14,7 @@ module.exports = function (argv: string[]): void {
         .version(pkg.version)
         .command('component', 'Manages components')
         .command('deployment', 'Manages deployments')
+        .command('project', 'Manages projects')
         .command('resource', 'Manages resources')
         .command('runtime', 'Manages runtimes')
         .command('service', 'Manages services')
@@ -23,12 +24,13 @@ module.exports = function (argv: string[]): void {
     program
         .command('init')
         .description('Populates the current folder with the worspace folders structure')
-        .action(() => {
+        .option('-t, --template <template>', 'The workspace template', 'kumori-workspace')
+        .action(({template}) => {
             run(async () => {
                 if (workspace.isValidWorkspace()) {
                     logger.info("Workspace already created")
                 } else {
-                    workspace.init()
+                    workspace.init(template)
                 }
             })
         })

@@ -26,7 +26,7 @@ program
             if (token) {
                 config.token = token
             }
-            await workspace.config.addStamp(name, config, isDefault)
+            await workspace.configManager.addStamp(name, config, isDefault)
             logger.info(`Stamp added`)
         })
     })
@@ -42,7 +42,7 @@ program
             } else {
                 logger.info(`Listing detailed information of stamp ${stamp}`)
             }
-            let stampsInfo:{[key: string]: StampConfig} = workspace.config.getStampsInformation(stamp)
+            let stampsInfo:{[key: string]: StampConfig} = workspace.configManager.getStampsInformation(stamp)
             for (let stamp in stampsInfo) {
                 printStampData(stamp, stampsInfo[stamp])
             }
@@ -56,7 +56,7 @@ program
     .action((name) => {
         run(async () => {
             logger.info(`Removing stamp ${name}`)
-            await workspace.config.removeStamp(name)
+            await workspace.configManager.removeStamp(name)
             logger.info("Stamp removed from the workspace")
         })
     })
@@ -76,7 +76,7 @@ program
             if (token) {
                 config.token = token
             }
-            await workspace.config.updateStamp(name, config)
+            await workspace.configManager.updateStamp(name, config)
             logger.info(`Stamp data updated`)
         })
     })
@@ -87,7 +87,7 @@ program
     .action((name) => {
         run(async () => {
             logger.info(`Setting ${name} as the default stamp`)
-            await workspace.config.setDefaultStamp(name)
+            await workspace.configManager.setDefaultStamp(name)
             logger.info("Default stamp updated")
         })
     })

@@ -1,6 +1,6 @@
 import { WorkspaceConfigManager, StampConfig } from './workspace-manager'
 import { Domain, Path, Version } from './types'
-import { getJSON, checkName, checkParameter, checkIsNumber, checkName } from './utils'
+import { getJSON, checkName, checkParameter, checkIsNumber } from './utils'
 import * as path from 'path'
 import * as fs from 'fs-extra'
 import { AdmissionClient } from '@kumori/admission-client'
