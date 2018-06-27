@@ -27,8 +27,8 @@ program
     .action((name, {companyDomain}) => {
         run(async () => {
             logger.info(`Bundeling component ${name} from ${companyDomain}`)
-            let path = await workspace.components.build(name, companyDomain)
-            logger.info(`Distributable bundle created in ${path}`)
+            let componentPath = await workspace.components.build(name, companyDomain)
+            logger.info(`Distributable bundle created in ${componentPath}`)
         })
     })
 
