@@ -1,6 +1,6 @@
 # Changelog
 
-## v1.0.8
+## v1.1.0
 
 Now the CLI shows an error and help if an unknown command or subcommand is called.
 Improved some error messages.
