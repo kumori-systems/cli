@@ -24,7 +24,7 @@ module.exports = function (argv: string[]): void {
     program
         .command('init')
         .description('Populates the current folder with the worspace folders structure')
-        .option('-t, --template <template>', 'The workspace template', 'kumori-workspace')
+        .option('-t, --template <template>', 'The workspace template', '@kumori/workspace')
         .action(({template}) => {
             run(async () => {
                 if (workspace.isValidWorkspace()) {

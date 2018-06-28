@@ -45,3 +45,11 @@ export function executeProgram(program) {
         }
     }
 }
+
+export function printResults(callbacks: (() => void)[]) {
+    for (let cb of callbacks) {
+        logger.info(`---------------------------------------------------------`)
+        cb()
+    }
+    logger.info(`---------------------------------------------------------`)
+}

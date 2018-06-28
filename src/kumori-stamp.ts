@@ -1,14 +1,12 @@
 import * as program from 'commander'
 import * as logger from './logger'
 import { workspace, StampConfig } from './workspace';
-import { run, executeProgram } from './utils'
+import { run, executeProgram, printResults } from './utils'
 
 function printStampData(stamp: string, data: StampConfig) {
-    logger.info(`---------------------------------------------------------`)
     logger.info(`Name: \t\t\t${stamp}`)
     logger.info(`Admission URL: \t\t${data.admission}`)
     logger.info(`Authentication token: \t${data.token ? data.token : "Not set"}`)
-    logger.info(`---------------------------------------------------------`)
 }
 
 program
@@ -37,15 +35,19 @@ program
     .option('-s, --stamp <stamp>', 'Shows detailed information of this stamp only')
     .action(({stamp}) => {
         run(async () => {
-            if (stamp) {
+            if (!stamp) {
                 logger.info(`Listing reigstered stamps`)
             } else {
                 logger.info(`Listing detailed information of stamp ${stamp}`)
             }
             let stampsInfo:{[key: string]: StampConfig} = workspace.configManager.getStampsInformation(stamp)
+            let callbacks:(() => void)[] = []
             for (let stamp in stampsInfo) {
-                printStampData(stamp, stampsInfo[stamp])
+                callbacks.push(() => {
+                    printStampData(stamp, stampsInfo[stamp])
+                })
             }
+            printResults(callbacks)
         })
     })
 

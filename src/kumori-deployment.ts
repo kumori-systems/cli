@@ -1,19 +1,11 @@
 import * as program from 'commander'
 import * as logger from './logger'
-import { workspace, DeploymentData, RegistrationData } from './workspace/index'
-import { run, executeProgram } from './utils'
+import { workspace, DeploymentData } from './workspace/index'
+import { run, executeProgram, printResults } from './utils'
 
 let defaultDomain = workspace.configManager.config.domain
 let defaultTemplate = workspace.configManager.config.deployment.template
 let defaultStamp = workspace.configManager.config.defaultStamp.name
-
-function printResults(callbacks: (() => void)[]) {
-    for (let cb of callbacks) {
-        logger.info(`---------------------------------------------------------`)
-        cb()
-    }
-    logger.info(`---------------------------------------------------------`)
-}
 
 function printDeploymentData(data: DeploymentData) {
     logger.info("Service deployed:")
