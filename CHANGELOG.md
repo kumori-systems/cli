@@ -1,5 +1,10 @@
 # Changelog
 
+## v1.1.1
+
+Improved README.
+Increased the version of @kumori/generator-workspace
+
 ## v1.1.0
 
 Now the CLI shows an error and help if an unknown command or subcommand is called.
