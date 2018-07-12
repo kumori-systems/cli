@@ -1,6 +1,6 @@
 {
   "name": "@kumori/cli",
-  "version": "1.1.1",
+  "version": "0.0.0-development",
   "description": "Command line client for Kumori Platform",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -12,7 +12,8 @@
     "lint": "taskr lint",
     "test": "taskr test ",
     "clean": "taskr clean",
-    "superclean": "taskr superclean"
+    "superclean": "taskr superclean",
+    "semantic-release": "semantic-release"
   },
   "author": "Kumori Systems <info@kumori.systems>",
   "license": "MIT",
@@ -21,10 +22,14 @@
     "url": "https://github.com/kumori-systems/cli.git"
   },
   "devDependencies": {
+    "@semantic-release/changelog": "^2.1.1",
+    "@semantic-release/git": "^6.0.1",
+    "@semantic-release/github": "^4.4.0",
     "@taskr/shell": "^1.1.0",
     "@taskr/typescript": "^1.1.0",
     "@types/commander": "^2.12.2",
     "@types/node": "^10.1.2",
+    "semantic-release": "^15.7.1",
     "taskr": "^1.1.0",
     "tslint": "^5.10.0",
     "typescript": "^2.8.3"
@@ -40,5 +45,27 @@
     "jstransformer-dot": "^0.1.2",
     "sao": "^0.22.17",
     "yeoman-environment": "^2.2.0"
+  },
+  "release": {
+    "noCi": true,
+    "dryRun": true,
+    "branch": "ticket1261",
+    "verifyConditions": [
+      "@semantic-release/github",
+      "@semantic-release/npm"
+    ],
+    "analyzeCommits": {
+      "parserOpts": {
+        "mergePattern": "^Merge branch \\'(.+)\\' into \\'(.+)\\'$"
+      }
+    },
+    "publish": [
+      "@semantic-release/github",
+      "@semantic-release/npm"
+    ],
+    "prepare": [
+      "@semantic-release/changelog",
+      "@semantic-release/git"
+    ]
   }
 }

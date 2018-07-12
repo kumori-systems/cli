@@ -1,0 +1,13 @@
+# The release pipeline will run only if all jobs in the test pipeline are successful
+
+stages:
+  - release
+
+before_script:
+  - npm install
+
+publish:
+  image: registry.gitlab.com/ecloud/ci-runners/native:2_0_0
+  stage: release
+  script:
+    - npx semantic-release
