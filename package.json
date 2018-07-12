@@ -49,7 +49,7 @@
   "release": {
     "noCi": true,
     "dryRun": true,
-    "branch": "ticket1261",
+    "branch": "master",
     "verifyConditions": [
       "@semantic-release/github",
       "@semantic-release/npm"
