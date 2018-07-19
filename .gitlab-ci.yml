@@ -1,13 +1,18 @@
-# The release pipeline will run only if all jobs in the test pipeline are successful
+image: registry.gitlab.com/ecloud/ci-runners/native:2_0_0
 
 stages:
-  - release
+    - release
 
 before_script:
-  - npm install
+    - npm install
 
 publish:
-  image: registry.gitlab.com/ecloud/ci-runners/native:2_0_0
-  stage: release
-  script:
+stage: release
+script:
     - npx semantic-release
+    - LAST_COMMIT=$( git rev-parse HEAD ) && git checkout master && git merge $LAST_COMMIT
+    - git remote add gitlab https://oauth2:$GLB_TOKEN@gitlab.com/$CI_PROJECT_PATH.git
+    - git push gitlab master
+    - LAST_VERSION=$( git describe --tags ) && git push gitlab $LAST_VERSION
+only:
+    - master

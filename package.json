@@ -1,6 +1,6 @@
 {
   "name": "@kumori/cli",
-  "version": "0.0.0-development",
+  "version": "1.1.1",
   "description": "Command line client for Kumori Platform",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -17,19 +17,14 @@
   },
   "author": "Kumori Systems <info@kumori.systems>",
   "license": "MIT",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/kumori-systems/cli.git"
-  },
+  "repository": "github:kumori-systems/cli",
   "devDependencies": {
-    "@semantic-release/changelog": "^2.1.1",
-    "@semantic-release/git": "^6.0.1",
-    "@semantic-release/github": "^4.4.0",
     "@taskr/shell": "^1.1.0",
     "@taskr/typescript": "^1.1.0",
     "@types/commander": "^2.12.2",
     "@types/node": "^10.1.2",
-    "semantic-release": "^15.7.1",
+    "semantic-release": "^15.8.1",
+    "semantic-release-shared-config": "gitlab:kumori/semantic-release-shared-config",
     "taskr": "^1.1.0",
     "tslint": "^5.10.0",
     "typescript": "^2.8.3"
@@ -47,25 +42,9 @@
     "yeoman-environment": "^2.2.0"
   },
   "release": {
-    "noCi": true,
-    "dryRun": true,
-    "branch": "master",
-    "verifyConditions": [
-      "@semantic-release/github",
-      "@semantic-release/npm"
-    ],
-    "analyzeCommits": {
-      "parserOpts": {
-        "mergePattern": "^Merge branch \\'(.+)\\' into \\'(.+)\\'$"
-      }
-    },
-    "publish": [
-      "@semantic-release/github",
-      "@semantic-release/npm"
-    ],
-    "prepare": [
-      "@semantic-release/changelog",
-      "@semantic-release/git"
-    ]
+    "extends": "semantic-release-shared-config",
+    "noCi": false,
+    "dryRun": false,
+    "npmPublish": true
   }
 }
