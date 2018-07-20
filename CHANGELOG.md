@@ -1,3 +1,10 @@
+## [1.1.2](https://github.com/kumori-systems/cli/compare/v1.1.1...v1.1.2) (2018-07-20)
+
+
+### Bug Fixes
+
+* **dependencies:** updated dependencies with Admission Client and Generator Workspace ([dac56a5](https://github.com/kumori-systems/cli/commit/dac56a5))
+
 # Changelog
 
 ## v1.1.1
