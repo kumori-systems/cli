@@ -1,7 +1,7 @@
 import { ElementInfo } from './element-info'
 import { Domain, Version, Template, Urn } from './types'
 import { ElementManager } from './element-manager'
-import { workspace, Deployment, DeploymentConfig, ServiceConfig, RegistrationResult } from '@kumori/workspace'
+import { workspace, Deployment, DeploymentConfig, ExtendedRegistrationResult } from '@kumori/workspace'
 import { ScalingDeploymentModification } from '@kumori/admission-client'
 
 export interface DeploymentInfo extends ElementInfo {
@@ -26,6 +26,7 @@ export interface DeploymentData {
 export interface RegistrationData {
     errors?: any[]
     deployments?: DeploymentData[]
+    skipped?: Urn[]
 }
 
 export class DeploymentManager extends ElementManager {
@@ -57,11 +58,11 @@ export class DeploymentManager extends ElementManager {
         throw new Error('NOT IMPLEMENTED')
     }
 
-    public async deploy (name: string, stamp: string, addInbounds: boolean): Promise<RegistrationData> {
+    public async deploy (name: string, stamp: string, addInbounds: boolean, buildComponents: boolean, forceBuildComponents: boolean): Promise<RegistrationData> {
         this._checkParameter(name, "Name not defined")
         this._checkParameter(stamp, "Target stamp not defined")
         await this._checkStamp(stamp)
-        let info:RegistrationResult = await workspace.deployWithDependencies(name, stamp, addInbounds)
+        let info:ExtendedRegistrationResult = await workspace.deployWithDependencies(name, stamp, addInbounds, buildComponents, forceBuildComponents)
         if (!info.deployments) {
             throw new Error('Nothing deployed')
         }
@@ -103,6 +104,9 @@ export class DeploymentManager extends ElementManager {
         }
         if (deployments.length > 0) {
             registrationData.deployments = deployments
+        }
+        if (info.skipped) {
+            registrationData.skipped = info.skipped
         }
 
         return registrationData

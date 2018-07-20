@@ -6,6 +6,7 @@ import { ResourceManager } from './resource-manager'
 import { RuntimeManager } from './runtime-manager'
 import { ServiceManager } from './service-manager'
 import { WorkspaceConfigManager } from './workspace-manager'
+import { ProjectManager } from './project-manager';
 
 export { Domain, Version, Template, Path, Urn, Url } from './types'
 
@@ -16,7 +17,7 @@ export { RuntimeInfo } from './runtime-manager'
 export { ServiceInfo } from './service-manager'
 export { StampConfig } from './workspace-manager'
 
-import { workspace as itiWorkspace, configuration as iticonf, Deployment, DeploymentConfig, ServiceConfig, RegistrationResult } from '@kumori/workspace'
+import { workspace as itiWorkspace, configuration as iticonf } from '@kumori/workspace'
 
 const CONFIG_FILE_NAME = 'kumoriConfig.json'
 const WORKSPACE_CONFIG_FILE = path.join(process.cwd(), CONFIG_FILE_NAME);
@@ -25,8 +26,9 @@ const WORKSPACE_CONFIG_FILE = path.join(process.cwd(), CONFIG_FILE_NAME);
 export class Workspace {
 
     components: ComponentManager
-    config: WorkspaceConfigManager
+    configManager: WorkspaceConfigManager
     deployments: DeploymentManager
+    projects: ProjectManager
     resources: ResourceManager
     runtimes: RuntimeManager
     services: ServiceManager
@@ -34,21 +36,22 @@ export class Workspace {
     constructor() {
         // Our custom configuration file name must be set in workspace lib
         iticonf.configFileName = CONFIG_FILE_NAME
-        this.config = new WorkspaceConfigManager(WORKSPACE_CONFIG_FILE)
-        this.components = new ComponentManager(this.config, 'components')
-        this.deployments = new DeploymentManager(this.config, 'deployments')
-        this.resources = new ResourceManager(this.config, 'resources')
-        this.runtimes = new RuntimeManager(this.config, 'runtimes')
-        this.services = new ServiceManager(this.config, 'services')
+        this.configManager = new WorkspaceConfigManager(WORKSPACE_CONFIG_FILE)
+        this.components = new ComponentManager(this.configManager, 'components')
+        this.deployments = new DeploymentManager(this.configManager, 'deployments')
+        this.projects = new ProjectManager(this.configManager, '.')
+        this.resources = new ResourceManager(this.configManager, 'resources')
+        this.runtimes = new RuntimeManager(this.configManager, 'runtimes')
+        this.services = new ServiceManager(this.configManager, 'services')
     }
 
     public isValidWorkspace(): boolean {
-        return this.config.isValidWorkspace()
+        return this.configManager.isValidWorkspace()
     }
 
-    public async init(): Promise<void> {
+    public async init(template: string): Promise<void> {
         // await this.config.initConfigFile(JSON.stringify(DEFAULT_CONFIG, null, 2))
-        await itiWorkspace.init()
+        await itiWorkspace.init(template)
     }
 }
 

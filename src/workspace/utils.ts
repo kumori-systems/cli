@@ -19,3 +19,10 @@ export function checkIsNumber(param: any, errorMessage: string, min: number, max
         throw new Error(errorMessage)
     }
 }
+
+export function checkName(name: string): void {
+    let re = /^\w+$/;
+    if (!re.exec(name)) {
+        throw new Error(`Name "${name}" is not valid. Use only by alphanumeric characters`)
+    }
+}

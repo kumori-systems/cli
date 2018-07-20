@@ -1,5 +1,21 @@
 # Changelog
 
+## v1.1.1
+
+Improved README.
+Increased the version of @kumori/generator-workspace
+
+## v1.1.0
+
+Now the CLI shows an error and help if an unknown command or subcommand is called.
+Improved some error messages.
+Added `kumori stamp list` command to list detailed information about stamps registered in a workspace.
+Changed `@kumori/workspace` dependency to 1.0.5, which uses yeoman generators to create elements instead of internal templates.
+Bug fix. Now only names with alphanumeric characters are allowed.
+Bug fix. Runtimes with empty Dockerfile (i.e., with empty `FROM` key) do not fail when `kumori runtime build` is executed.
+Bug fix. The command `kumori -h` (a.k.a. `kumori --help`) was showing a `command not found` error message.
+Added `kumori project add` command. This command populates the workspace with a set of elements, typically (but not necessarily) some components and a service.
+
 ## v1.0.7
 
 Added a new flag to `kumori deployment deploy` to avoid creating default inbounds with random domains. By default this flag is set to false.

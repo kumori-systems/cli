@@ -1,14 +1,14 @@
 import * as program from 'commander'
 import * as logger from './logger'
 import { workspace } from './workspace/index'
-import { run } from './utils'
+import { run, executeProgram } from './utils'
 
-let defaultDomain = workspace.components.configManager.config.domain
-let defaultTemplate = workspace.components.configManager.config.runtime.template
-let defaultParent = workspace.components.configManager.config.runtime.parent
-let defaultFolder = workspace.components.configManager.config.runtime.folder
-let defaultEntrypoint = workspace.components.configManager.config.runtime.entrypoint
-let defaultStamp = workspace.components.configManager.config.defaultStamp.name
+let defaultDomain = workspace.configManager.config.domain
+let defaultTemplate = workspace.configManager.config.runtime.template
+let defaultParent = workspace.configManager.config.runtime.parent
+let defaultFolder = workspace.configManager.config.runtime.folder
+let defaultEntrypoint = workspace.configManager.config.runtime.entrypoint
+let defaultStamp = workspace.configManager.config.defaultStamp.name
 
 program
     .command('add <name>')
@@ -85,4 +85,5 @@ program
         })
     })
 
-program.parse(process.argv);
+executeProgram(program)
+// program.parse(process.argv);

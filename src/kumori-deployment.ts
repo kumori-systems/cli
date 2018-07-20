@@ -1,14 +1,17 @@
 import * as program from 'commander'
 import * as logger from './logger'
-import { workspace, DeploymentData, RegistrationData } from './workspace/index'
-import { run } from './utils'
+import { workspace, DeploymentData } from './workspace/index'
+import { run, executeProgram, printResults } from './utils'
 
-let defaultDomain = workspace.components.configManager.config.domain
-let defaultTemplate = workspace.components.configManager.config.deployment.template
-let defaultStamp = workspace.components.configManager.config.defaultStamp.name
+let defaultDomain = workspace.configManager.config.domain
+let defaultTemplate = workspace.configManager.config.deployment.template
+let defaultStamp = workspace.configManager.config.defaultStamp.name
 
 function printDeploymentData(data: DeploymentData) {
-    logger.info(`---------------------------------------------------------`)
+    logger.info("Service deployed:")
+    if (data.nickname) {
+        logger.info(`Nickname: \t${data.nickname}`)
+    }
     logger.info(`URN: \t${data.urn}`)
     for (let role of data.roles) {
         logger.info(`Role: \t${role.name}`)
@@ -16,7 +19,13 @@ function printDeploymentData(data: DeploymentData) {
             logger.info(`\tLink: \t${entrypoint.urn}`)
         }
     }
-    logger.info(`---------------------------------------------------------`)
+}
+
+function printSkipped(skipped: string[], stamp: string) {
+    logger.info(`Elements already registered in ${stamp}:`)
+    for (let elemUrn of skipped) {
+        logger.info(`* ${elemUrn}\t \x1b[31mSKIPPED\x1b[0m`)
+    }
 }
 
 program
@@ -52,19 +61,34 @@ program
 program
     .command('deploy <name>')
     .description('Creates a new service in the target stamp')
-    .option('-i, --skip-inbounds', 'Random domains are not created to this service entrypoints')
+    .option('-b, --build-components', 'For each service component, generate a distributable version if it is missing and the component has not been already registered in the platform')
+    .option('-f, --force-build-components', 'For each service component, generate a distributable version if the component has not been already registered in the platform')
+    .option('-i, --generate-inbounds', 'Add random domains for each service entrypoint')
     .option('-s, --stamp <stamp>', 'The target stamp', defaultStamp)
-    .action((name, {skipInbounds, stamp}) => {
+    .action((name, {buildComponents, forceBuildComponents, generateInbounds, stamp}) => {
         run(async () => {
             let service = await workspace.deployments.getDeploymentServiceName(name)
             logger.info(`Deploying service ${service} in stamp ${stamp} using configuration ${name}`)
-            let inbounds = !skipInbounds
-            let data = await workspace.deployments.deploy(name, stamp, inbounds)
-            if (data.deployments){
-                for (let deploymentData of data.deployments) {
-                    printDeploymentData(deploymentData)
+            let data = await workspace.deployments.deploy(name, stamp, generateInbounds, buildComponents, forceBuildComponents)
+            if (data.errors) {
+                for (let error of data.errors) {
+                    logger.error(error)
                 }
             }
+            let callbacks:(() => void)[] = []
+            if (data.skipped && (data.skipped.length > 0)) {
+                callbacks.push(() => {
+                    printSkipped(data.skipped, stamp)
+                })
+            }
+            if (data.deployments){
+                for (let deploymentData of data.deployments) {
+                    callbacks.push(() => {
+                        printDeploymentData(deploymentData)
+                    })
+                }
+            }
+            printResults(callbacks)
         })
     })
 
@@ -122,4 +146,5 @@ program
         })
     })
 
-program.parse(process.argv);
+executeProgram(program)
+// program.parse(process.argv);

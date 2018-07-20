@@ -17,6 +17,7 @@ This application can be used to boost the process of developing deployments serv
   * [`init`](#init-command)
   * [`component`](#component-command)
   * [`deployment`](#deployment-command)
+  * [`project`](#project-command)
   * [`resource`](#resource-command)
   * [`runtime`](#runtime-command)
   * [`service`](#service-command)
@@ -35,8 +36,8 @@ Install it as a npm package
 The services deployed in Kumori Platform must follow a very specific service model known as the `Kumori Platform Service Model`. This model is based in the following main concepts:
 
 * Component: it is a runnable piece of code which must implement a given API. A component can interact with other components by using channels. A component can also have some configuration parameters and require some resources to work (CPU, RAM, persitent volumes, ...)
-* Deployment: defines a specific topology of components connecting their channels.
-* Service or deployment: it is an instance of a deployment and it is composed by several instance of each of its components. The number of instances might variate in time.
+* Service: defines a specific topology of components connecting their channels.
+* Deployment: it is an instance of a service and it is composed by several instance of each of its components. The number of instances might variate in time.
 * Stamp: is an instance of the Kumori Platform. Only one stamp is considered THE Kumori Platform. However, in some cases specific stamps can be created by the Kumori team for specific purposes.
 
 ## Usage
@@ -47,8 +48,15 @@ To use `kumori` CLI first create an initial workspace
 $ mkdir workspace
 $ cd workspace
 $ kumori init
-Initializing workspace following standard Kumori project hierarchy...
-Initializing kumoriConfig.json for this workspace...
+   create kumoriConfig.json
+   create builts/README.md
+   create components/README.md
+   create dependencies/README.md
+   create deployments/README.md
+   create resources/README.md
+   create runtimes/README.md
+   create services/README.md
+   create tests/README.md
 ```
 The workspace structure is described in the [init command](#init-command) section.
 
@@ -59,20 +67,21 @@ Usage: kumori [options] [command]
 
 Options:
 
-  -V, --version  output the version number
-  -h, --help     output usage information
+  -V, --version   output the version number
+  -h, --help      output usage information
 
 Commands:
 
-  component      Manages components
-  deployment     Manages deployments
-  resource       Manages resources
-  runtime        Manages runtimes
-  service        Manages services
-  set            Manages workspace configuration parameters
-  stamp          Manages stamps
-  init           Populates the current folder with the worspace folders structure
-  help [cmd]     display help for [cmd]
+  component       Manages components
+  deployment      Manages deployments
+  project         Manages projects
+  resource        Manages resources
+  runtime         Manages runtimes
+  service         Manages services
+  set             Manages workspace configuration parameters
+  stamp           Manages stamps
+  init [options]  Populates the current folder with the worspace folders structure
+  help [cmd]      display help for [cmd]
 ```
 
 Each one of those commands have several subcommands.
@@ -91,11 +100,24 @@ Created a brand new workspace. A workspace is a folder with the following struct
 ├── resources
 ├── runtimes
 ├── services
-├── templates
 └── tests
 ```
 
-The `kumoriConfig.json` file contains the configuration used in this workspace. The `build` folder can be used to store bundles with prepacked elements. The `components`, `services`, `deployments`, `resources` and `runtimes` store the different elements under development. The `templates` folder contains the templates used by the scaffolding subcommands. Includes some templated by default but you can add your own ones. The scaffolding subcommands use [doT.js](http://olado.github.io/doT/index.html) template library.
+Supports the following subcommands:
+
+~~~
+Usage: init [options]
+
+Populates the current folder with the worspace folders structure
+
+Options:
+
+  -t, --template <template>  The workspace template (default: @kumori/workspace)
+  -h, --help                 output usage information
+~~~
+
+
+The `kumoriConfig.json` file contains the configuration used in this workspace. The `build` folder can be used to store bundles with prepacked elements. The `components`, `services`, `deployments`, `projects`, `resources` and `runtimes` store the different elements under development.
 
 ### Component Command
 
@@ -142,6 +164,24 @@ Commands:
 ```
 
 With them, a developer can define new configurations for the deployments in the workspace, use them to create new services in Kumori Platform, list the current services hosted in Kumori Platform, remove a configuration from the workspace, scale a component of a given deployment or undeploy a hosted service.
+
+### Project Command
+
+Supports the following subcommand:
+
+```
+Usage: kumori-project [options] [command]
+
+Options:
+
+  -h, --help            output usage information
+
+Commands:
+
+  add [options] <name>  Populates the workspace with a project elements. A project might include components, resoureces, services, runtimes and deployments
+```
+
+This command is used to populate your workspace with a set of elements. This is typically used to create in one shot all elements you need to create a new service, including all its components and so on.
 
 ### Resource Command
 
@@ -191,13 +231,13 @@ Commands:
 
 The subcommands `add` and `remove` are used to create and remove custom runtime configuration (Dockerfile and manifest) in the workspace.
 
-The `build` subcommand is used to create the Docker image. We strongly recommend to use this subcommand instead of the plain `docker build` since this subcommand will create a delta image containing only the docker layers on the top of the parent native image used. That might reduce a lot the weight of the resultin image.
+The `build` subcommand is used to create the Docker image. We strongly recommend to use this subcommand instead of the plain `docker build` since this subcommand will create a delta image containing only the docker layers on the top of the parent native image used. That might reduce a lot the weight of the resulting image.
 
 Finally, `register` and `unregister` subcommands are used to upload or remove images from the Kumori Platform.
 
 ### Service Command
 
-This command is used to manage the deployments in the workspace and includes the following subcommands:
+This command is used to manage the services in the workspace and includes the following subcommands:
 
 ````
 Usage: kumori service [options] [command]
@@ -214,7 +254,7 @@ Commands:
   unregister [options] <name>  Unregisters a service from a stamp
 ````
 
-The subcommands `add` and `remove` are used to define new deployments in the workspace and remove them. The subcommands `register` and `unregister` are used to upload and remove the deployments from the Kumori Platform.
+The subcommands `add` and `remove` are used to define new services in the workspace and remove them. The subcommands `register` and `unregister` are used to upload and remove the services from the Kumori Platform.
 
 ### Set Command
 
@@ -248,8 +288,9 @@ Options:
 Commands:
 
   add [options] <name> <admission>  Adds a new stamp to the workspace
-  update [options] <name>           Updates the information of a previously registered stamp
+  list [options]                    Shows detailed information about the stamps registered in this workspace
   remove <name>                     Removes a stamp
+  update [options] <name>           Updates the information of a previously registered stamp
   use <name>                        Sets a stamp as the default stamp
 ```
 
@@ -259,7 +300,7 @@ For each stamp the following information must be provided:
 * The stamp admission URL. This is used by the command line application to interact with the Kumori Platform.
 * The stamp authentication token. This token can be picked up from the platform dashboard. Recall that tokens expire.
 
-So, taken that into account, with the `add` subcommand a new platform can be registered. The `update` subcommand can be used to change the configuration of a previously registered stamp. The `remove` subcommand deletes a previously registered Kumori Platform instance. Finally, the `use` subcommand sets the Kumori Platform used by default.
+So, taken that into account, with the `add` subcommand a new platform can be registered. The `update` subcommand can be used to change the configuration of a previously registered stamp. The `remove` subcommand deletes a previously registered Kumori Platform instance. The `use` subcommand sets the Kumori Platform used by default. Finally, registered stamps can be listed by using the `list` subcommand.
 
 ## License
 

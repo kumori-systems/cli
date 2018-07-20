@@ -1,7 +1,13 @@
 import * as program from 'commander'
 import * as logger from './logger'
 import { workspace, StampConfig } from './workspace';
-import { run } from './utils'
+import { run, executeProgram, printResults } from './utils'
+
+function printStampData(stamp: string, data: StampConfig) {
+    logger.info(`Name: \t\t\t${stamp}`)
+    logger.info(`Admission URL: \t\t${data.admission}`)
+    logger.info(`Authentication token: \t${data.token ? data.token : "Not set"}`)
+}
 
 program
     .command('add <name> <admission>')
@@ -18,8 +24,42 @@ program
             if (token) {
                 config.token = token
             }
-            await workspace.config.addStamp(name, config, isDefault)
+            await workspace.configManager.addStamp(name, config, isDefault)
             logger.info(`Stamp added`)
+        })
+    })
+
+program
+    .command('list')
+    .description('Shows detailed information about the stamps registered in this workspace')
+    .option('-s, --stamp <stamp>', 'Shows detailed information of this stamp only')
+    .action(({stamp}) => {
+        run(async () => {
+            if (!stamp) {
+                logger.info(`Listing reigstered stamps`)
+            } else {
+                logger.info(`Listing detailed information of stamp ${stamp}`)
+            }
+            let stampsInfo:{[key: string]: StampConfig} = workspace.configManager.getStampsInformation(stamp)
+            let callbacks:(() => void)[] = []
+            for (let stamp in stampsInfo) {
+                callbacks.push(() => {
+                    printStampData(stamp, stampsInfo[stamp])
+                })
+            }
+            printResults(callbacks)
+        })
+    })
+
+
+program
+    .command('remove <name>')
+    .description('Removes a stamp')
+    .action((name) => {
+        run(async () => {
+            logger.info(`Removing stamp ${name}`)
+            await workspace.configManager.removeStamp(name)
+            logger.info("Stamp removed from the workspace")
         })
     })
 
@@ -38,19 +78,8 @@ program
             if (token) {
                 config.token = token
             }
-            await workspace.config.updateStamp(name, config)
+            await workspace.configManager.updateStamp(name, config)
             logger.info(`Stamp data updated`)
-        })
-    })
-
-program
-    .command('remove <name>')
-    .description('Removes a stamp')
-    .action((name) => {
-        run(async () => {
-            logger.info(`Removing stamp ${name}`)
-            await workspace.config.removeStamp(name)
-            logger.info("Stamp removed from the workspace")
         })
     })
 
@@ -60,9 +89,10 @@ program
     .action((name) => {
         run(async () => {
             logger.info(`Setting ${name} as the default stamp`)
-            await workspace.config.setDefaultStamp(name)
+            await workspace.configManager.setDefaultStamp(name)
             logger.info("Default stamp updated")
         })
     })
 
-program.parse(process.argv);
+executeProgram(program)
+// program.parse(process.argv);

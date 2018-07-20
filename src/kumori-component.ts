@@ -1,7 +1,7 @@
 import * as program from 'commander'
 import * as logger from './logger'
 import { workspace } from './workspace/index'
-import { run } from './utils'
+import { run, executeProgram } from './utils'
 
 let defaultDomain = workspace.components.configManager.config.domain
 let defaultTemplate = workspace.components.configManager.config.component.template
@@ -27,8 +27,8 @@ program
     .action((name, {companyDomain}) => {
         run(async () => {
             logger.info(`Bundeling component ${name} from ${companyDomain}`)
-            let path = await workspace.components.build(name, companyDomain)
-            logger.info(`Distributable bundle created in ${path}`)
+            let componentPath = await workspace.components.build(name, companyDomain)
+            logger.info(`Distributable bundle created in ${componentPath}`)
         })
     })
 
@@ -79,4 +79,5 @@ program
         })
     })
 
-    program.parse(process.argv);
+executeProgram(program)
+// program.parse(process.argv);

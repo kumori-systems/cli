@@ -15,6 +15,7 @@ export class RuntimeManager extends ElementManager {
         this._checkParameter(componentFolder, "Component folder not defined")
         this._checkParameter(entrypoint, "Entrypoint not defined")
         this._checkParameter(template, "Template not defined")
+        this._checkName(name)
         let config:RuntimeConfig = {
             name: name,
             domain: domain

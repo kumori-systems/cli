@@ -1,5 +1,5 @@
 import { ElementInfo } from './element-info'
-import { Domain, Version, Template } from './types'
+import { Domain, Version, Template, Path } from './types'
 import { ElementManager } from './element-manager'
 import { workspace, ServiceConfig } from '@kumori/workspace'
 
@@ -7,10 +7,12 @@ export interface ServiceInfo extends ElementInfo {
 }
 
 export class ServiceManager extends ElementManager {
+
     public async add (name: string, domain: Domain, template: Template): Promise<ServiceInfo> {
         this._checkParameter(name, "Name not defined")
         this._checkParameter(domain, "Domain not defined")
         this._checkParameter(template, "Template not defined")
+        this._checkName(name)
         let config:ServiceConfig = {
             name: name,
             domain: domain

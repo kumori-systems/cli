@@ -6,22 +6,25 @@ const DEFAULT_CONFIG: any = {
     "working-stamp": "localstamp",
     "domain": "domain.com",
     "component": {
-        "template": "javascript"
+        "template": "gitlab:jbgisber/template-component-javascript"
     },
     "deployment": {
-        "template": "basic"
+        "template": "gitlab:jbgisber/template-deployment-basic"
+    },
+    "project": {
+        "template": "gitlab:jbgisber/template-project-hello-world"
     },
     "resource": {
-        "template": "vhost"
+        "template": "gitlab:jbgisber/template-resource-vhost"
     },
     "runtime": {
-        "template": "basic",
+        "template": "gitlab:jbgisber/template-runtime-basic",
         "parent": "eslap://eslap.cloud/runtime/native/1_1_1",
         "folder": "/eslap/component",
         "entrypoint": "/eslap/runtime-agent/scripts/start-runtime-agent.sh"
     },
     "service": {
-        "template": "basic"
+        "template": "gitlab:jbgisber/template-service-basic"
     },
     "stamps": {
         "localstamp": {
@@ -56,6 +59,9 @@ export interface WorkspaceConfig {
     resource: {
         template: Template
     }
+    project: {
+        template: Template
+    },
     stamps: {
         [key: string]: StampConfig
     }
@@ -143,7 +149,7 @@ export class WorkspaceConfigManager {
         checkParameter(name, "Name not defined")
         checkParameter(config, "Stamp config not defined")
         if (this.config.stamps[name]) {
-            throw new Error(`Stamp ${name} already registered`)
+            throw new Error(`Stamp "${name}" already registered`)
         }
         this.config.stamps[name] = config;
         if (isDefault) {
@@ -156,7 +162,7 @@ export class WorkspaceConfigManager {
         checkParameter(name, "Name not defined")
         checkParameter(config, "Stamp config not defined")
         if (!this.config.stamps[name]) {
-            throw new Error(`Stamp ${name} is not registered`)
+            throw new Error(`Stamp "${name}" is not registered`)
         }
         this.config.stamps[name].admission = config.admission || this.config.stamps[name].admission
         this.config.stamps[name].token = config.token || this.config.stamps[name].token
@@ -166,10 +172,10 @@ export class WorkspaceConfigManager {
     public async removeStamp (name: string): Promise<void> {
         checkParameter(name, "Name not defined")
         if (!this.config.stamps[name]) {
-            throw new Error(`Stamp ${name} is not registered`)
+            throw new Error(`Stamp "${name}" is not registered`)
         }
         if (this.config.defaultStamp && (name.localeCompare(this.config.defaultStamp.name) == 0)) {
-            throw new Error(`Stamp ${name} is the default stamp and cannot be removed`)
+            throw new Error(`Stamp "${name}" is the default stamp and cannot be removed`)
         }
         delete this.config.stamps[name]
         await this.saveChanges()
@@ -178,7 +184,7 @@ export class WorkspaceConfigManager {
     public async setDefaultStamp (name: string): Promise<void> {
         checkParameter(name, "Name not defined")
         if (!this.config.stamps[name]) {
-            throw new Error(`Stamp ${name} is not registered`)
+            throw new Error(`Stamp "${name}" is not registered`)
         }
         this.config.defaultStamp = this.config.stamps[name]
         await this.saveChanges()
@@ -186,6 +192,20 @@ export class WorkspaceConfigManager {
 
     public async getDefaultStampConfig (): Promise<StampConfig> {
         return this.config.defaultStamp;
+    }
+
+    public getStampsInformation(stamp?: string): { [key: string]: StampConfig } {
+        if (stamp) {
+            if (this.config && this.config.stamps && this.config.stamps[stamp]) {
+                let result:{ [key: string]: StampConfig } = {}
+                result[stamp] = this.config.stamps[stamp]
+                return result
+            } else {
+                throw new Error(`Stamp "${stamp}" is not registered`)
+            }
+        } else {
+            return this.config.stamps
+        }
     }
 
     private _saveChangesRaw(data: string): Promise<void> {
@@ -210,6 +230,7 @@ export class WorkspaceConfigManager {
             domain: raw.domain,
             component: raw.component,
             deployment: raw.deployment,
+            project: raw.project,
             resource: raw.resource,
             runtime: raw.runtime,
             service: raw.service,
