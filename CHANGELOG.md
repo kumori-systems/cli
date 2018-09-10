@@ -1,3 +1,10 @@
+## [1.1.4](https://github.com/kumori-systems/cli/compare/v1.1.3...v1.1.4) (2018-09-10)
+
+
+### Bug Fixes
+
+* **workspace:** changed the version of the workspace package dependency ([c9032a2](https://github.com/kumori-systems/cli/commit/c9032a2))
+
 ## [1.1.3](https://github.com/kumori-systems/cli/compare/v1.1.2...v1.1.3) (2018-08-29)
 
 
