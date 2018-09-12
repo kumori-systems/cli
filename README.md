@@ -9,6 +9,8 @@ This application can be used to boost the process of developing deployments serv
 * Managing a workspace creating initial versions of elements under development by using templates.
 * Interacting with Kumori Platform.
 
+More information can be found in (Kumori PaaS Documentation)[https://github.com/kumori-systems/documentation].
+
 ## Table of Contents
 
 * [Installation](#installation)
@@ -56,7 +58,6 @@ $ kumori init
    create resources/README.md
    create runtimes/README.md
    create services/README.md
-   create tests/README.md
 ```
 The workspace structure is described in the [init command](#init-command) section.
 
