@@ -1,3 +1,10 @@
+## [1.1.8](https://github.com/kumori-systems/cli/compare/v1.1.7...v1.1.8) (2018-09-17)
+
+
+### Bug Fixes
+
+* **dependencies:** updated versions of [@kumori](https://github.com/kumori)/workspace and [@kumori](https://github.com/kumori)/generator-workspace ([5b71632](https://github.com/kumori-systems/cli/commit/5b71632))
+
 ## [1.1.7](https://github.com/kumori-systems/cli/compare/v1.1.6...v1.1.7) (2018-09-12)
 
 
