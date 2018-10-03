@@ -46,11 +46,10 @@ export class ComponentManager extends ElementManager {
                 try {
                     await workspace.runtime.install(devRuntime)
                 } catch(error) {
-                    await workspace.runtime.install(runtimeUrn)
+                    // await workspace.runtime.install(runtimeUrn)
                 }
-            } else {
-                await workspace.runtime.install(runtimeUrn)
             }
+            await workspace.runtime.install(runtimeUrn)
         } catch(error) {
             throw new Error(`Cannot install runtime image for component "${name}"`)
         }

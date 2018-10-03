@@ -23,6 +23,7 @@
     "@taskr/typescript": "^1.1.0",
     "@types/commander": "^2.12.2",
     "@types/node": "^10.1.2",
+    "husky": "^1.1.0",
     "semantic-release": "^15.8.1",
     "semantic-release-shared-config": "gitlab:kumori/semantic-release-shared-config",
     "taskr": "^1.1.0",
@@ -46,5 +47,10 @@
     "noCi": false,
     "dryRun": false,
     "npmPublish": true
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "hooks/pre-commit.sh"
+    }
   }
 }
