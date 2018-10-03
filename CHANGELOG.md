@@ -1,3 +1,10 @@
+## [1.1.9](https://github.com/kumori-systems/cli/compare/v1.1.8...v1.1.9) (2018-10-03)
+
+
+### Bug Fixes
+
+* **build:** now the runtime image is installed allways, even if the dev version is found in the docker hub ([97363b4](https://github.com/kumori-systems/cli/commit/97363b4))
+
 ## [1.1.8](https://github.com/kumori-systems/cli/compare/v1.1.7...v1.1.8) (2018-09-17)
 
 
