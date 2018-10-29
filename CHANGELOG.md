@@ -1,3 +1,10 @@
+## [1.1.10](https://github.com/kumori-systems/cli/compare/v1.1.9...v1.1.10) (2018-10-29)
+
+
+### Bug Fixes
+
+* **deployment:** now a service and its components are not included in the deployment bundle if the service is already registered in the platform. ([2d775bc](https://github.com/kumori-systems/cli/commit/2d775bc))
+
 ## [1.1.9](https://github.com/kumori-systems/cli/compare/v1.1.8...v1.1.9) (2018-10-03)
 
 
