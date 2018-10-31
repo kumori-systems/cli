@@ -32,7 +32,7 @@
   },
   "dependencies": {
     "@kumori/admission-client": "1.0.2",
-    "@kumori/generator-workspace": "1.1.4",
+    "@kumori/generator-workspace": "1.1.7",
     "@kumori/workspace": "1.1.4",
     "@types/fs-extra": "5.0.2",
     "commander": "2.15.1",
