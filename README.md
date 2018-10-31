@@ -9,7 +9,7 @@ This application can be used to boost the process of developing deployments serv
 * Managing a workspace creating initial versions of elements under development by using templates.
 * Interacting with Kumori Platform.
 
-More information can be found in (Kumori PaaS Documentation)[https://github.com/kumori-systems/documentation].
+More information can be found in [Kumori PaaS Documentation](https://github.com/kumori-systems/documentation).
 
 ## Table of Contents
 
@@ -305,7 +305,7 @@ So, taken that into account, with the `add` subcommand a new platform can be reg
 
 ## Yeoman Generators
 
-The Kumori CLI internally uses http://yeoman.io[yeoman] generators to populate the workspace when the `add` subcommands are executed. Take a look to Kumori's generators list in https://github.com/kumori-systems/generator-workspace#readme[@kumori/generator-workspace] module.
+The Kumori CLI internally uses [yeoman](http://yeoman.io) generators to populate the workspace when the `add` subcommands are executed. Take a look to Kumori's generators list in [@kumori/generator-workspace](https://github.com/kumori-systems/generator-workspace#readme) module.
 
 ## License
 
