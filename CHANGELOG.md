@@ -1,3 +1,10 @@
+## [1.1.13](https://github.com/kumori-systems/cli/compare/v1.1.12...v1.1.13) (2018-10-31)
+
+
+### Bug Fixes
+
+* **generators:** updated the generator version to 1.1.7. The new version includes a Java Web application generators as a service ([0845c32](https://github.com/kumori-systems/cli/commit/0845c32))
+
 ## [1.1.12](https://github.com/kumori-systems/cli/compare/v1.1.11...v1.1.12) (2018-10-31)
 
 
