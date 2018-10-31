@@ -1,3 +1,10 @@
+## [1.1.11](https://github.com/kumori-systems/cli/compare/v1.1.10...v1.1.11) (2018-10-30)
+
+
+### Bug Fixes
+
+* **java:** added new templates for java components and services ([16fe6ef](https://github.com/kumori-systems/cli/commit/16fe6ef))
+
 ## [1.1.10](https://github.com/kumori-systems/cli/compare/v1.1.9...v1.1.10) (2018-10-29)
 
 
