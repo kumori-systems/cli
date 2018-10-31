@@ -303,6 +303,10 @@ For each stamp the following information must be provided:
 
 So, taken that into account, with the `add` subcommand a new platform can be registered. The `update` subcommand can be used to change the configuration of a previously registered stamp. The `remove` subcommand deletes a previously registered Kumori Platform instance. The `use` subcommand sets the Kumori Platform used by default. Finally, registered stamps can be listed by using the `list` subcommand.
 
+## Yeoman Generators
+
+The Kumori CLI internally uses http://yeoman.io[yeoman] generators to populate the workspace when the `add` subcommands are executed. Take a look to Kumori's generators list in https://github.com/kumori-systems/generator-workspace#readme[@kumori/generator-workspace] module.
+
 ## License
 
 MIT © Kumori Systems
