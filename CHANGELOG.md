@@ -1,3 +1,10 @@
+## [1.1.12](https://github.com/kumori-systems/cli/compare/v1.1.11...v1.1.12) (2018-10-31)
+
+
+### Bug Fixes
+
+* **generators:** updated the generators version due to patch changes (removed some unused files) ([19f8344](https://github.com/kumori-systems/cli/commit/19f8344))
+
 ## [1.1.11](https://github.com/kumori-systems/cli/compare/v1.1.10...v1.1.11) (2018-10-30)
 
 
