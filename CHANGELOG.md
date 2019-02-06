@@ -5,6 +5,13 @@
 
 * **dependencies:** updated the [@kumori](https://github.com/kumori)/generator-workspace dependency from 1.1.7 to 1.1.8 ([97e0d4b](https://github.com/kumori-systems/cli/commit/97e0d4b))
 
+## [1.1.14](https://github.com/kumori-systems/cli/compare/v1.1.13...v1.1.14) (2019-02-06)
+
+
+### Bug Fixes
+
+* **dependencies:** updated the [@kumori](https://github.com/kumori)/generator-workspace dependency from 1.1.7 to 1.1.8 ([97e0d4b](https://github.com/kumori-systems/cli/commit/97e0d4b))
+
 ## [1.1.13](https://github.com/kumori-systems/cli/compare/v1.1.12...v1.1.13) (2018-10-31)
 
 
