@@ -65,7 +65,7 @@ program
     .option('-f, --force-build-components', 'For each service component, generate a distributable version if the component has not been already registered in the platform')
     .option('-i, --generate-inbounds', 'Add random domains for each service entrypoint')
     .option('-s, --stamp <stamp>', 'The target stamp', defaultStamp)
-    .action((name, {buildComponents, forceBuildComponents, generateInbounds, stamp}) => {
+    .action((name, { buildComponents, forceBuildComponents, generateInbounds, stamp }) => {
         run(async () => {
             let service = await workspace.deployments.getDeploymentServiceName(name)
             logger.info(`Deploying service ${service} in stamp ${stamp} using configuration ${name}`)
