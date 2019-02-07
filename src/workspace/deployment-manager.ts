@@ -68,19 +68,6 @@ export class DeploymentManager extends ElementManager {
         }
         /*
         This converts the format returned by workspace lib to RegistrationData format
-        RegistrationData format:
-
-        export class RegistrationResult {
-            public 'successful': any
-            public 'errors': any
-            public 'deployments': {
-                'successful': Deployment[]
-                'errors': any
-            }
-            public 'links': any
-            public 'tests': any
-            public 'testToken': string
-        }
         */
         let errors:any[] = []
         let deployments:DeploymentData[] = []
