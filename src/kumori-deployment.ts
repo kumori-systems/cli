@@ -72,7 +72,15 @@ program
             let data = await workspace.deployments.deploy(name, stamp, generateInbounds, buildComponents, forceBuildComponents)
             if (data.errors) {
                 for (let error of data.errors) {
-                    logger.error(error)
+                    if (error instanceof Object) {
+                        if (error.message) {
+                            logger.error(error.message)
+                        } else {
+                            logger.error(JSON.stringify(error, null, 2))
+                        }
+                    } else {
+                        logger.error(error)
+                    }
                 }
             }
             let callbacks:(() => void)[] = []
