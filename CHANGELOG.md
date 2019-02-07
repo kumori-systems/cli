@@ -1,3 +1,11 @@
+## [1.1.15](https://github.com/kumori-systems/cli/compare/v1.1.14...v1.1.15) (2019-02-07)
+
+
+### Bug Fixes
+
+* **deploy:** improved 'deployment deploy' command error messages ([1d92f95](https://github.com/kumori-systems/cli/commit/1d92f95))
+* **lint:** corrected linting problems ([80acbde](https://github.com/kumori-systems/cli/commit/80acbde))
+
 ## [1.1.14](https://github.com/kumori-systems/cli/compare/v1.1.13...v1.1.14) (2019-02-06)
 
 
