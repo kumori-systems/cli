@@ -1,3 +1,11 @@
+## [1.1.16](https://github.com/kumori-systems/cli/compare/v1.1.15...v1.1.16) (2019-02-08)
+
+
+### Bug Fixes
+
+* **dependencies:** dependencies updated to avoid some vulerabilities ([34bb7c3](https://github.com/kumori-systems/cli/commit/34bb7c3))
+* **dependencies:** dependencies updated to avoid some vulerabilities ([19bf3f3](https://github.com/kumori-systems/cli/commit/19bf3f3))
+
 ## [1.1.15](https://github.com/kumori-systems/cli/compare/v1.1.14...v1.1.15) (2019-02-07)
 
 
