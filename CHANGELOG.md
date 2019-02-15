@@ -1,3 +1,10 @@
+## [1.1.17](https://github.com/kumori-systems/cli/compare/v1.1.16...v1.1.17) (2019-02-15)
+
+
+### Bug Fixes
+
+* **dependencies:** updated dependency with workspace module ([8be1db0](https://github.com/kumori-systems/cli/commit/8be1db0))
+
 ## [1.1.16](https://github.com/kumori-systems/cli/compare/v1.1.15...v1.1.16) (2019-02-08)
 
 
