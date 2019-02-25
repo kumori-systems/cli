@@ -1,3 +1,10 @@
+## [1.1.18](https://github.com/kumori-systems/cli/compare/v1.1.17...v1.1.18) (2019-02-25)
+
+
+### Bug Fixes
+
+* **dependency:** updated dependency with [@kumori](https://github.com/kumori)/workspace ([ffcd4db](https://github.com/kumori-systems/cli/commit/ffcd4db))
+
 ## [1.1.17](https://github.com/kumori-systems/cli/compare/v1.1.16...v1.1.17) (2019-02-15)
 
 
