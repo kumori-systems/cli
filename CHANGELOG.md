@@ -1,3 +1,10 @@
+## [1.1.20](https://github.com/kumori-systems/cli/compare/v1.1.19...v1.1.20) (2019-02-26)
+
+
+### Bug Fixes
+
+* **dependencies:** updated dependency with workspace manager ([c555672](https://github.com/kumori-systems/cli/commit/c555672))
+
 ## [1.1.19](https://github.com/kumori-systems/cli/compare/v1.1.18...v1.1.19) (2019-02-26)
 
 
