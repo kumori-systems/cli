@@ -95,7 +95,7 @@ export class WorkspaceConfigManager {
             this.initialized = true
         } catch(error) {
             this.initialized = false
-            if (error.code.localeCompare("ENOENT") != 0) {
+            if (error.code && error.code.localeCompare("ENOENT") != 0) {
                 throw error
             } else {
                 this.config = DEFAULT_CONFIG

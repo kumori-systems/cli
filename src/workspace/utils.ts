@@ -6,7 +6,6 @@ export function getJSON(filepath: string): any {
     return (new vm.Script(jsonString)).runInNewContext();
 }
 
-
 export function checkParameter(param: any, errorMessage: string): void {
     if ((param == null) || (param == undefined)) {
         throw new Error(errorMessage)

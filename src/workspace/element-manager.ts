@@ -38,7 +38,7 @@ export class ElementManager {
             try {
                 let path = this._getElementFolder(name, domain)
                 fs.stat(path, (error, stats) => {
-                    if (error && error.code.localeCompare('ENOENT') == 0) {
+                    if (error && error.code && error.code.localeCompare('ENOENT') == 0) {
                         resolve(false)
                     } else if (error) {
                         reject(error)
@@ -73,10 +73,10 @@ export class ElementManager {
             getJSON(manifestPath)
             return manifestPath
         } catch(error) {
-            if (error.code.localeCompare('ENOENT') == 0) {
+            if (error.code && error.code.localeCompare('ENOENT') == 0) {
                 throw new Error(`Manifest not found for ${name}.`)
             } else {
-                throw new Error(`Error accesing ${name}'s manifest`)
+                throw new Error(`Error accessing ${name}'s manifest: ${error.message}`)
             }
         }
     }
@@ -86,10 +86,10 @@ export class ElementManager {
             let manifestPath = path.join(this._getElementFolder(name, domain), 'Manifest.json')
             return getJSON(manifestPath)
         } catch(error) {
-            if (error.code.localeCompare('ENOENT') == 0) {
+            if (error.code && error.code.localeCompare('ENOENT') == 0) {
                 throw new Error(`Manifest not found for ${name}.`)
             } else {
-                throw new Error(`Error accesing ${name}'s manifest`)
+                throw new Error(`Error accessing ${name}'s manifest: ${error.message}`)
             }
         }
     }
