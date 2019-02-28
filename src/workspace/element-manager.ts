@@ -76,7 +76,7 @@ export class ElementManager {
             if (error.code && error.code.localeCompare('ENOENT') == 0) {
                 throw new Error(`Manifest not found for ${name}.`)
             } else {
-                throw new Error(`Error accessing ${name}'s manifest: ${error.message}`)
+                throw new Error(`Error accessing ${name}'s manifest. This error usually appears when the Manifest.json file is not a correct JSON document. Original error message: ${error.message}`)
             }
         }
     }
@@ -89,7 +89,7 @@ export class ElementManager {
             if (error.code && error.code.localeCompare('ENOENT') == 0) {
                 throw new Error(`Manifest not found for ${name}.`)
             } else {
-                throw new Error(`Error accessing ${name}'s manifest: ${error.message}`)
+                throw new Error(`Error accessing ${name}'s manifest. This error usually appears when the Manifest.json file is not a correct JSON document. Original error message: ${error.message}`)
             }
         }
     }
