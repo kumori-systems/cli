@@ -1,3 +1,10 @@
+## [1.1.22](https://github.com/kumori-systems/cli/compare/v1.1.21...v1.1.22) (2019-03-01)
+
+
+### Bug Fixes
+
+* **errors:** error messages improved ([c3e62a5](https://github.com/kumori-systems/cli/commit/c3e62a5))
+
 ## [1.1.21](https://github.com/kumori-systems/cli/compare/v1.1.20...v1.1.21) (2019-02-28)
 
 
