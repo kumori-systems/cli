@@ -36,23 +36,6 @@ export class ComponentManager extends ElementManager {
         if (!elementExists) {
             throw new Error(`Component "${name}" not found for doman "${domain}"`)
         }
-        let runtimeUrn = this._getComponentRuntime(name, domain)
-        let devRuntime = this._getComponentDevRuntime(name, domain)
-        if (!runtimeUrn) {
-            throw new Error(`Runtime not found for component "${name} and domain "${domain}"`)
-        }
-        try {
-            if (devRuntime) {
-                try {
-                    await workspace.runtime.install(devRuntime)
-                } catch(error) {
-                    // await workspace.runtime.install(runtimeUrn)
-                }
-            }
-            await workspace.runtime.install(runtimeUrn)
-        } catch(error) {
-            throw new Error(`Cannot install runtime image for component "${name}"`)
-        }
         let config = {
             domain: domain,
             name: name
@@ -109,23 +92,5 @@ export class ComponentManager extends ElementManager {
         await this._checkStamp(stamp)
         let urn = workspace.component.generateUrn(name, domain, version)
         await workspace.stamp.unregister(stamp, urn)
-    }
-
-    private _getComponentRuntime (name: string, domain: Domain): Urn {
-        let manifest = this._getElementManifest(name, domain)
-        return manifest.runtime
-    }
-
-    private _getComponentDevRuntime (name: string, domain: Domain): Urn {
-        let runtimeUrn = this._getComponentRuntime(name, domain)
-        let last = runtimeUrn.lastIndexOf('/')
-        if (last != -1) {
-            let devManifest = runtimeUrn.substring(0, last+1)
-            devManifest += 'dev/'
-            devManifest += runtimeUrn.substring(last+1)
-            return devManifest
-        } else {
-            throw new Error('Wrong ruintime URN format')
-        }
     }
 }
