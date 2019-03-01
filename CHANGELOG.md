@@ -1,3 +1,10 @@
+## [1.1.24](https://github.com/kumori-systems/cli/compare/v1.1.23...v1.1.24) (2019-03-01)
+
+
+### Bug Fixes
+
+* **dependencies:** updated dependencies versions ([87a0197](https://github.com/kumori-systems/cli/commit/87a0197))
+
 ## [1.1.23](https://github.com/kumori-systems/cli/compare/v1.1.22...v1.1.23) (2019-03-01)
 
 
