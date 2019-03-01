@@ -3,6 +3,7 @@ import { Domain, Version, Template, Urn } from './types'
 import { ElementManager } from './element-manager'
 import { workspace, Deployment, DeploymentConfig, ExtendedRegistrationResult } from '@kumori/workspace'
 import { ScalingDeploymentModification } from '@kumori/admission-client'
+import { workspace as cliWorkspace} from './index'
 
 export interface DeploymentInfo extends ElementInfo {
 }
@@ -62,7 +63,9 @@ export class DeploymentManager extends ElementManager {
         this._checkParameter(name, "Name not defined")
         this._checkParameter(stamp, "Target stamp not defined")
         await this._checkStamp(stamp)
-        let info:ExtendedRegistrationResult = await workspace.deployWithDependencies(name, stamp, addInbounds, buildComponents, forceBuildComponents)
+        let info:ExtendedRegistrationResult = await workspace.deployWithDependencies(
+            name, stamp, addInbounds, buildComponents, forceBuildComponents
+        )
         // if (!info.deployments) {
         //     console.log("--------->", info)
         //     throw new Error('Nothing deployed')
