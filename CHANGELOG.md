@@ -1,3 +1,10 @@
+## [1.1.23](https://github.com/kumori-systems/cli/compare/v1.1.22...v1.1.23) (2019-03-01)
+
+
+### Bug Fixes
+
+* **runtime:** now the runtimes are installed by the @kumori/workspace module and not directly by the CLI. With this solution, the runtime will be installed (if needed) each time a component is going to be built, no matter from witch command is trying to do it ([d68d187](https://github.com/kumori-systems/cli/commit/d68d187))
+
 ## [1.1.22](https://github.com/kumori-systems/cli/compare/v1.1.21...v1.1.22) (2019-03-01)
 
 
