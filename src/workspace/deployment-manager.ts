@@ -68,11 +68,11 @@ export class DeploymentManager extends ElementManager {
         )
         // if (!info.deployments) {
         //     console.log("--------->", info)
-        //nameothing deployed')
-        //name
-        /*name
-        Thnamereturned by workspace lib to RegistrationData format
-        */name
+        //     throw new Error('Nothing deployed')
+        // }
+        /*
+        This converts the format returned by workspace lib to RegistrationData format
+        */
         let errors:any[] = []
         if (info.errors) {
             errors.push.apply(errors, info.errors)
