@@ -1,7 +1,7 @@
 import * as program from 'commander'
 import * as logger from './logger'
 import { workspace, DeploymentData } from './workspace/index'
-import { run, executeProgram, printResults } from './utils'
+import { run, executeProgram, printError, printResults } from './utils'
 
 let defaultDomain = workspace.configManager.config.domain
 let defaultTemplate = workspace.configManager.config.deployment.template
@@ -74,12 +74,19 @@ program
                 for (let error of data.errors) {
                     if (error instanceof Object) {
                         if (error.message) {
-                            logger.error(error.message)
+                            printError(error.message)
+                            // logger.error(error.message)
                         } else {
                             logger.error(JSON.stringify(error, null, 2))
                         }
                     } else {
-                        logger.error(error)
+                        printError(error)
+                        // let valErrorsIndex = error.indexOf('VALIDATION ERRORS')
+                        // if (valErrorsIndex > 0) {
+                        //     logger.error(`Manifest validation failed: ${error.substring(valErrorsIndex+18)}`)
+                        // } else {
+                        //     logger.error(error)
+                        // }
                     }
                 }
             }

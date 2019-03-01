@@ -2,7 +2,6 @@ import { ElementInfo } from './element-info'
 import { Domain, Version, Template, Path, Urn } from './types'
 import { ElementManager } from './element-manager'
 import { workspace, RuntimeConfig } from '@kumori/workspace'
-import * as path from 'path'
 
 export interface RuntimeInfo extends ElementInfo {
 }

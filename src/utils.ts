@@ -1,13 +1,50 @@
 import * as logger from './logger'
-import * as fs from 'fs'
-import * as path from 'path'
 import { workspace } from './workspace'
+import * as path from 'path'
 
 export async function run(cb: () => void) {
     try {
         await cb()
     } catch(error) {
         logger.error(error.message || error)
+    }
+}
+
+export function printError(message) {
+    try {
+
+        let valErrorsIndex = message.indexOf('VALIDATION ERRORS')
+        let rsyncIndex = message.indexOf('Rsync failed for')
+        if (valErrorsIndex > 0) {
+            logger.error(`Manifest validation failed: ${message.substring(valErrorsIndex+18)}`)
+        } else if (rsyncIndex > 0) {
+            // Try to convert the rsync error to a more understandable one
+            let startIndex = message.indexOf('/./')+3
+            let endIndex = message.indexOf('manifest.json') - 1
+            let element = message.substring(startIndex, endIndex)
+            let parts = element.split('/')
+            let aux = parts[1]
+            let last = parts[parts.length-1]
+            let versionParts = last.split('_')
+            let areNumbers = true
+            for (let version of versionParts) {
+                areNumbers = areNumbers && (!Number.isNaN(Number.parseInt(version)))
+            }
+            if (areNumbers) {
+                parts = parts.slice(0, -1)
+            }
+            parts[1] = parts[0]
+            parts[0] = aux
+            element = '.'
+            for (let part of parts) {
+                element += `/${part}`
+            }
+            logger.error(`Error registering element: ${element}. Probably the element has not been found or properly registered. Check the manifests.`)
+        } else {
+            logger.error(message)
+        }
+    } catch(error) {
+        logger.error(message)
     }
 }
 

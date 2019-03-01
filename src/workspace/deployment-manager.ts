@@ -63,18 +63,19 @@ export class DeploymentManager extends ElementManager {
         this._checkParameter(stamp, "Target stamp not defined")
         await this._checkStamp(stamp)
         let info:ExtendedRegistrationResult = await workspace.deployWithDependencies(name, stamp, addInbounds, buildComponents, forceBuildComponents)
-        if (!info.deployments) {
-            throw new Error('Nothing deployed')
-        }
+        // if (!info.deployments) {
+        //     console.log("--------->", info)
+        //     throw new Error('Nothing deployed')
+        // }
         /*
         This converts the format returned by workspace lib to RegistrationData format
         */
         let errors:any[] = []
+        if (info.errors) {
+            errors.push.apply(errors, info.errors)
+        }
         let deployments:DeploymentData[] = []
         if (info.deployments) {
-            if (info.errors) {
-                errors.push.apply(errors, info.errors)
-            }
             if (info.deployments.errors) {
                 errors.push.apply(errors, info.deployments.errors)
             }
