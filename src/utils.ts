@@ -1,6 +1,7 @@
 import * as logger from './logger'
 import { workspace } from './workspace'
-import * as path from 'path'
+import * as url from 'url'
+import { createInterface } from 'readline'
 
 export async function run(cb: () => void) {
     try {
@@ -89,4 +90,34 @@ export function printResults(callbacks: (() => void)[]) {
         cb()
     }
     logger.info(`---------------------------------------------------------`)
+}
+
+export function getHostname(domain: string): string {
+    let hostname = domain.toLowerCase()
+    if (hostname.startsWith('http://') || hostname.startsWith('https://')) {
+        hostname = url.parse(hostname).hostname
+    }
+    return hostname
+}
+
+
+export function question(text: string, expected: RegExp): Promise<boolean> {
+    return new Promise((resolve, reject) => {
+        try {
+            const rl = createInterface({
+                input: process.stdin,
+                output: process.stdout
+            })
+            rl.question(text, (answer) => {
+                if (answer.match(expected)) {
+                    resolve(true)
+                } else {
+                    resolve(false)
+                }
+                rl.close()
+            })
+        } catch(error) {
+            reject(error)
+        }
+    })
 }

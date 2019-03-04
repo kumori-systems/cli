@@ -1,7 +1,7 @@
 import * as program from 'commander'
 import * as logger from './logger'
 import { workspace, DeploymentData } from './workspace/index'
-import { run, executeProgram, printError, printResults } from './utils'
+import { run, executeProgram, getHostname, printError, printResults, question } from './utils'
 
 let defaultDomain = workspace.configManager.config.domain
 let defaultTemplate = workspace.configManager.config.deployment.template
@@ -43,18 +43,6 @@ program
             logger.info(`Adding a deployment configuration ${name} for version ${serviceVersion} of service ${service} using template ${template}`)
             let info = await workspace.deployments.add(name, companyDomain, service, serviceVersion, template)
             logger.info(`Deployment added in ${info.path}`)
-        })
-    })
-
-program
-    .command('update <name>')
-    .description('Updates a deployment configuration in the workspace')
-    .option('-t, --template <template>', 'The deployment template', defaultTemplate)
-    .action((name, {template}) => {
-        run(async () => {
-            logger.info(`Updating deployment ${name} using template ${template}`)
-            let info = await workspace.deployments.update(name, template)
-            logger.info(`Deployment updated in ${info.path}`)
         })
     })
 
@@ -149,28 +137,122 @@ program
         })
     })
 
+// program
+//     .command('undeploy <service> [otherServices...]')
+//     .description('Undeploys services from the target stamp')
+//     .option('-i, --remove-inbounds', 'Removes the inbounds connected to each service')
+//     .option('-s, --stamp <stamp>', 'The target stamp', defaultStamp)
+//     .option('-t, --type <type>', '"URN" if  <service> and [otherServices...] are service URNs. "NAME" if they are deployment configuration names in the workspace. "DOMAIN" if their linked inbound domains are used', 'URN')
+//     .action((service, otherServices, {removeInbounds, stamp, type}) => {
+//         run(async () => {
+//             logger.info(`Undeploying service with URN ${service} from ${stamp}`)
+//             try {
+//                 await workspace.deployments.undeploy(service, stamp)
+//                 logger.info("Service undeployed")
+//             } catch (error) {
+//                 printError(error.message  || error)
+//             }
+//             otherServices.forEach(async function(otherService) {
+//                 logger.info(`Undeploying service with URN ${otherService} from ${stamp}`)
+//                 try {
+//                     await workspace.deployments.undeploy(otherService, stamp)
+//                     logger.info("Service undeployed")
+//                 } catch (error) {
+//                     printError(error.message || error)
+//                 }
+//             })
+//         })
+//     })
+
 program
-    .command('undeploy <urn> [otherUrns...]')
-    .description('Undeploys one or more services from the target stamp')
+    .command('undeploy <service> [otherServices...]')
+    .description('Undeploys services from the target stamp')
+    .option('-i, --remove-inbounds', 'Removes the inbounds connected to each service')
     .option('-s, --stamp <stamp>', 'The target stamp', defaultStamp)
-    .action((urn, otherUrns, {stamp}) => {
+    .option('-t, --type <type>', '"URN" if  <service> and [otherServices...] are service URNs. "NAME" if they are deployment configuration names in the workspace. "DOMAIN" if their linked inbound domains are used', 'URN')
+    .action((service, otherServices, {removeInbounds, stamp, type}) => {
         run(async () => {
-            logger.info(`Undeploying service with URN ${urn} from ${stamp}`)
-            try {
-                await workspace.deployments.undeploy(urn, stamp)
-                logger.info("Service undeployed")
-            } catch (error) {
-                printError(error.message  || error)
-            }
-            otherUrns.forEach(async function(otherUrn) {
-                logger.info(`Undeploying service with URN ${otherUrn} from ${stamp}`)
-                try {
-                    await workspace.deployments.undeploy(otherUrn, stamp)
-                    logger.info("Service undeployed")
-                } catch (error) {
-                    printError(error.message || error)
+            let services: string[] = []
+            switch(type) {
+                case('URN'): {
+                    services = [ service ]
+                    for (let other of otherServices) {
+                        if (!services.includes(other)) {
+                            services.push(other)
+                        }
+                    }
+                    break;
                 }
-            })
+                case('NAME'): {
+                    services = await workspace.deployments.getUrnsFromDeploymentName(service, stamp)
+                    for (let otherService of otherServices) {
+                        let otherUrns = await workspace.deployments.getUrnsFromDeploymentName(otherService, stamp)
+                        for (let other of otherUrns) {
+                            if (!services.includes(other)) {
+                                services.push(other)
+                            }
+                        }
+                    }
+                    break;
+                }
+                case('DOMAIN'): {
+                    service = getHostname(service)
+                    services = await workspace.deployments.getUrnsFromInboundDomain(service, stamp)
+                    for (let otherService of otherServices) {
+                        let otherUrns = await workspace.deployments.getUrnsFromInboundDomain(otherService, stamp)
+                        for (let other of otherUrns) {
+                            if (!services.includes(other)) {
+                                services.push(other)
+                            }
+                        }
+                    }
+                    break;
+                }
+                default: {
+                    console.log('DEFAULT')
+                    logger.error(`Unkown type ${type}`)
+                }
+            }
+            if (removeInbounds) {
+                let inbounds = await workspace.deployments.getInboundsFromUrns(services, stamp)
+                services = services.concat(inbounds)
+            }
+            if (services.length == 0) {
+                throw new Error('None of the current services match the given conditions')
+            }
+            let text = 'The following services will be undeployed:\n'
+            for (let service of services) {
+                text += `\n\t${service}`
+            }
+            text += '\n\nAre you sure (write "yes" to proceed): '
+            let proceed = await question(text, /^y(es)?$/i)
+            if (proceed) {
+                let result = await workspace.deployments.undeployUrns(services, stamp)
+                logger.info(`\nUndeployed services from ${stamp}:\n`)
+                for (let urn of result.undeployed) {
+                    logger.info(`\t${urn}`)
+                }
+                if (result.errors.length > 0) {
+                    logger.error(`\nErrors:\n`)
+                    for (let error of result.errors) {
+                        logger.error(`\t${error.message || error}`)
+                    }
+                }
+            } else {
+                logger.info("Aborting")
+            }
+        })
+    })
+
+program
+    .command('update <name>')
+    .description('Updates a deployment configuration in the workspace')
+    .option('-t, --template <template>', 'The deployment template', defaultTemplate)
+    .action((name, {template}) => {
+        run(async () => {
+            logger.info(`Updating deployment ${name} using template ${template}`)
+            let info = await workspace.deployments.update(name, template)
+            logger.info(`Deployment updated in ${info.path}`)
         })
     })
 

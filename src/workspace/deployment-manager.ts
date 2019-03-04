@@ -4,6 +4,9 @@ import { ElementManager } from './element-manager'
 import { workspace, Deployment, DeploymentConfig, ExtendedRegistrationResult } from '@kumori/workspace'
 import { ScalingDeploymentModification } from '@kumori/admission-client'
 import { workspace as cliWorkspace} from './index'
+import { getNested } from './utils'
+
+const INBOUND_SERVICE_URN_PREFIX = 'eslap://eslap.cloud/services/http/inbound/'
 
 export interface DeploymentInfo extends ElementInfo {
 }
@@ -28,6 +31,12 @@ export interface RegistrationData {
     errors?: any[]
     deployments?: DeploymentData[]
     skipped?: Urn[]
+}
+
+export enum ServiceIdType {
+    Urn,
+    Name,
+    Domain
 }
 
 export class DeploymentManager extends ElementManager {
@@ -104,6 +113,84 @@ export class DeploymentManager extends ElementManager {
     }
 
     /**
+     * Returns the deployments URNs related to a given deployment configuration in the workspace.
+     * The element of the deployment manifest used to search for the deployments is the
+     * `servicename` key.
+     *
+     * @param name The deployment configuration name in the workspace
+     * @param stamp The stamp to look in
+     * @returns An array of deployment URNs
+     */
+    public async getUrnsFromDeploymentName(name: string, stamp: string): Promise<Urn[]> {
+        this._checkParameter(name, "Deployment name not defined")
+        this._checkParameter(stamp, "Target stamp not defined")
+        await this._checkStamp(stamp)
+        let elementExists = await this._checkElement(name)
+        if (!elementExists) {
+            throw new Error(`Deployment configuration "${name}" not found in this workspace`)
+        }
+        let serviceName = await this.getDeploymentServiceName(name)
+        let admission = await this._getAdmissionClient(stamp)
+        let data:Urn[] = []
+        let deployments = await admission.findDeployments()
+        if (deployments) {
+            for (let name in deployments) {
+                let deployment = deployments[name]
+                if (deployment.service.localeCompare(serviceName) == 0) {
+                    data.push(name as Urn)
+                }
+            }
+        }
+        return data
+    }
+
+    /**
+     * Returns the deployments URNs linked to a given inbound represented by its domain.
+     *
+     * @param domain The inbound domain
+     * @param stamp The stamp to look in
+     * @returns An array of deployment URNs
+     */
+    public async getUrnsFromInboundDomain(domain: string, stamp: string): Promise<Urn[]> {
+        this._checkParameter(domain, "Domain not defined")
+        this._checkParameter(stamp, "Target stamp not defined")
+        await this._checkStamp(stamp)
+        let urns:Urn[] = []
+        let admission = await this._getAdmissionClient(stamp)
+        let deployments = await admission.findDeployments()
+        if (deployments) {
+            for (let name in deployments) {
+                let deployment = deployments[name]
+                if (deployment.service.indexOf(INBOUND_SERVICE_URN_PREFIX) == 0) {
+                    let vhost = getNested(
+                        deployment, 'resources', 'vhost', 'resource', 'parameters', 'vhost'
+                    )
+                    let refDomain = getNested(
+                        deployment, 'roles', 'sep', 'entrypoint', 'refDomain'
+                    )
+                    let sepDomain = getNested(deployment, 'roles', 'sep', 'entrypoint', 'domain')
+                    if (vhost && vhost.localeCompare(domain) == 0) {
+                        for (let element of Object.keys(deployment.links.frontend)) {
+                            urns.push(element as Urn)
+                        }
+                    }
+                    else if (refDomain && refDomain.localeCompare(domain) == 0) {
+                        for (let element of Object.keys(deployment.links.frontend)) {
+                            urns.push(element as Urn)
+                        }
+                    }
+                    else if (sepDomain && sepDomain.localeCompare(domain) == 0) {
+                        for (let element of Object.keys(deployment.links.frontend)) {
+                            urns.push(element as Urn)
+                        }
+                    }
+                }
+            }
+        }
+        return urns
+    }
+
+    /**
      * Returns a list of running services in the target stamp.
      * NOTE: ITI's Workspace infoCommand is not used since it directly prints the stamps
      *       data on console instead of returning it.
@@ -175,6 +262,55 @@ export class DeploymentManager extends ElementManager {
             urn: urn
         }
         return data
+    }
+
+    public async getInboundsFromUrns(urns: Urn[], stamp: string): Promise<Urn[]> {
+        this._checkParameter(urns, "Deployment URNs not defined")
+        this._checkParameter(stamp, "Target stamp not defined")
+        let admission = await this._getAdmissionClient(stamp)
+        let inbounds:Urn[] = []
+        for (let urn of urns) {
+            let deployments:{[key: string]: Deployment} = await admission.findDeployments(urn)
+            if (deployments && deployments[urn] && deployments[urn].links && deployments[urn].links.service) {
+                let linked = deployments[urn].links.service
+                for (let name of Object.keys(linked)) {
+                    let linkedDeployments:{[key: string]: Deployment} = await admission.findDeployments(name)
+                    for (let link of Object.keys(linkedDeployments)) {
+                        if (linkedDeployments[link].service.indexOf(INBOUND_SERVICE_URN_PREFIX) != -1) {
+                            inbounds.push(linkedDeployments[link].urn)
+                        }
+                    }
+                }
+            }
+        }
+        return inbounds
+    }
+
+    public async undeployUrns(
+        urns: Urn[],
+        stamp: string
+    ): Promise<{ undeployed: Urn[], errors: Error[] }> {
+        this._checkParameter(urns, "Deployment URNs not defined")
+        this._checkParameter(stamp, "Target stamp not defined")
+        await this._checkStamp(stamp)
+        let admission = await this._getAdmissionClient(stamp)
+        let results = {
+            undeployed: [],
+            errors: []
+        }
+        for (let urn of urns) {
+            try {
+                if (await this.checkDeployment(urn, stamp)) {
+                    await admission.undeploy(urn)
+                    results.undeployed.push(urn)
+                } else {
+                    results.errors.push(new Error(`Service "${urn}" not found in "${stamp}"`))
+                }
+            } catch(error) {
+                results.errors.push(new Error(`Service "${urn}" undeployment failed in "${stamp}": ${error.message || error}`))
+            }
+        }
+        return results
     }
 
     public async getDeploymentServiceName(name: string): Promise<Urn> {

@@ -25,3 +25,13 @@ export function checkName(name: string): void {
         throw new Error(`Name "${name}" is not valid. Use only by alphanumeric characters`)
     }
 }
+
+export function getNested(obj: Object, ...keys: string[]): any {
+    for (let key of keys) {
+        if (!obj || !obj.hasOwnProperty(key)) {
+            return undefined
+        }
+        obj = obj[key]
+    }
+    return obj
+}
