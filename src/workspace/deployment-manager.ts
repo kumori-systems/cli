@@ -141,7 +141,7 @@ export class DeploymentManager extends ElementManager {
         this._checkIsNumber(instances, "The number of instances must be a natural number greater than zero", 1, Number.MAX_SAFE_INTEGER)
         this._checkParameter(stamp, "Target stamp not defined")
         await this._checkStamp(stamp)
-        if (!(await this._checkDeployment(urn, stamp))) {
+        if (!(await this.checkDeployment(urn, stamp))) {
             return Promise.reject(`Deployment not found in "${stamp}" with URN "${urn}"`)
         }
         let modification = new ScalingDeploymentModification();
@@ -166,11 +166,11 @@ export class DeploymentManager extends ElementManager {
         this._checkParameter(urn, "Deployment URN not defined")
         this._checkParameter(stamp, "Target stamp not defined")
         await this._checkStamp(stamp)
-        if (!(await this._checkDeployment(urn, stamp))) {
-            return Promise.reject(`Deployment not found in "${stamp}" with URN "${urn}"`)
+        if (!(await this.checkDeployment(urn, stamp))) {
+            return Promise.reject(new Error(`Deployment "${urn}" not found in "${stamp}"`))
         }
         let admission = await this._getAdmissionClient(stamp)
-        let result = await admission.undeploy(urn)
+        await admission.undeploy(urn)
         let data = {
             urn: urn
         }
@@ -185,7 +185,7 @@ export class DeploymentManager extends ElementManager {
         return manifest.servicename as Urn
     }
 
-    private async _checkDeployment(name: string, stamp: string): Promise<boolean> {
+    public async checkDeployment(name: string, stamp: string): Promise<boolean> {
         try {
             let admission = await this._getAdmissionClient(stamp)
             let deployments:{[key: string]: Deployment} = await admission.findDeployments(name)
@@ -195,7 +195,7 @@ export class DeploymentManager extends ElementManager {
                 return true
             }
         } catch(error) {
-            if (error.message && (error.message.indexOf(`Deployment "${name}" does not exist`) != -1)) {
+            if (error.message && (error.message.indexOf(`Deployment ${name} does not exist`) != -1)) {
                 return false
             } else if (error.message && (error.message.indexOf("Unexpected token u in JSON at position 0") != -1)) {
                 return false

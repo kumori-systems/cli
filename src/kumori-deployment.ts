@@ -150,14 +150,27 @@ program
     })
 
 program
-    .command('undeploy <urn>')
-    .description('Undeploys a service from the target stamp')
+    .command('undeploy <urn> [otherUrns...]')
+    .description('Undeploys one or more services from the target stamp')
     .option('-s, --stamp <stamp>', 'The target stamp', defaultStamp)
-    .action((urn, {stamp}) => {
+    .action((urn, otherUrns, {stamp}) => {
         run(async () => {
             logger.info(`Undeploying service with URN ${urn} from ${stamp}`)
-            await workspace.deployments.undeploy(urn, stamp)
-            logger.info("Service undeployed")
+            try {
+                await workspace.deployments.undeploy(urn, stamp)
+                logger.info("Service undeployed")
+            } catch (error) {
+                printError(error.message  || error)
+            }
+            otherUrns.forEach(async function(otherUrn) {
+                logger.info(`Undeploying service with URN ${otherUrn} from ${stamp}`)
+                try {
+                    await workspace.deployments.undeploy(otherUrn, stamp)
+                    logger.info("Service undeployed")
+                } catch (error) {
+                    printError(error.message || error)
+                }
+            })
         })
     })
 

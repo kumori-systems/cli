@@ -3,7 +3,7 @@ export function log(msg:string) {
 }
 
 export function error(msg:string) {
-    log(`Error: ${msg}`)
+    log(`\x1b[31mError: ${msg}\x1b[0m`)
 }
 
 export function warn(msg:string) {
