@@ -1,3 +1,11 @@
+## [1.1.26](https://github.com/kumori-systems/cli/compare/v1.1.25...v1.1.26) (2019-03-04)
+
+
+### Bug Fixes
+
+* **undeploy:** now multiple services can be undeployed in a single call to the undeploy command ([09a371f](https://github.com/kumori-systems/cli/commit/09a371f))
+* **undeploy:** now services can be undeployed by URN, deployment NAME or their inbound DOMAIN ([8951704](https://github.com/kumori-systems/cli/commit/8951704))
+
 ## [1.1.25](https://github.com/kumori-systems/cli/compare/v1.1.24...v1.1.25) (2019-03-01)
 
 
